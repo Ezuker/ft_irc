@@ -33,6 +33,7 @@ SRC = \
 	src/server/Server.cpp \
 	src/server/handleMessage.cpp \
 	src/server/handleChannel.cpp \
+	src/channel/getMask.cpp \
 
 INCLUDES = \
 	-I ./include/ \

@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 05:29:21 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 14:10:43 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/13 18:52:21 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,23 @@ int	Server::_createChannel(std::string name, int i)
 	
 	Channel *newChannel = new Channel(name, this->_clients[i - 1]);
 	this->_channels.push_back(newChannel);
-	message = ":" + this->_clients[i - 1]->getNickName() + "!~" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + " JOIN :#" + name + "\n";
+	message = ":" + this->_clients[i - 1]->getHostName() + " MODE #" + name + " +tn\n";
+	this->_sendMessageToClient(message, i);
+	message = ":" + this->_clients[i - 1]->getNickName() + "!" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + " JOIN :#" + name + "\n";
 	this->_sendMessageToClient(message, i);
 	this->_clients[i - 1]->setCurrentChannel(name);
 	this->_joinChannel(newChannel, i);
-	std::string response = ":JSPServer 353 " + this->_clients[i - 1]->getNickName() + " = #" + name + " :@" + this->_clients[i - 1]->getNickName() + "!~" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + "\n";
+	std::string response = ":" + this->_clients[i - 1]->getHostName() + " 331 " + this->_clients[i - 1]->getNickName() + " TOPIC #" + name + " :No topic is set\n";
 	this->_sendMessageToClient(response, i);
-	response = ":JSPServer 366 " + this->_clients[i - 1]->getNickName() + " #" + name + " :End of /NAMES list.\n";
+	response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " @ #" + name + " :" + this->_clients[i - 1]->getNickName() + "\n";
 	this->_sendMessageToClient(response, i);
-	response = ":JSPServer 324 " + this->_clients[i - 1]->getNickName() + " #" + name + " :+nt\n";
+	response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + name + " :End of /NAMES list.\n";
 	this->_sendMessageToClient(response, i);
-	response = ":JSPServer 329 " + this->_clients[i - 1]->getNickName() + " #" + name + " :1718259696\n";
+	response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " @ #" + name + " :@" + this->_clients[i - 1]->getNickName() + "\n";
 	this->_sendMessageToClient(response, i);
-	response = ":JSPServer 354 " + this->_clients[i - 1]->getNickName() + " #" + name + " :~" + this->_clients[i -1]->getNickName() + "\n";
+	response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + name + " :End of /NAMES list.\n";
+	this->_sendMessageToClient(response, i);
+	response = ":" + this->_clients[i - 1]->getHostName() + " 324 " + this->_clients[i - 1]->getNickName() + " #" + name + " tn\n";
 	this->_sendMessageToClient(response, i);
 	return (1);
 }
@@ -57,6 +61,10 @@ void	Server::_joinChannel(Channel *channel, int i)
 	clients.push_back(this->_clients[i - 1]);
 	channel->setClients(clients);
 	this->_clients[i - 1]->setCurrentChannel(channel->getChannelName());
+	std::string list;
+	channel->getMaskList();
+	message = ":" + this->_clients[i - 1]->getNickName() + this->_clients[i - 1]->getUserName() + this->_clients[i - 1]->getHostName() + " JOIN :#" + channel->getChannelName() + "\n";
+	this->_sendMessageToClient(message, i);
  }
 
 void Server::_sendMessageToChannelClients(Client *sender, const std::string &message)

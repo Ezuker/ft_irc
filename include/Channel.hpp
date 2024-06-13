@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:32:46 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/13 06:24:35 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/13 18:51:22 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,9 @@ class Channel
 		std::vector<Client *>	getOperators(void) const						{return (this->_operators);};
 		void					setClients(std::vector<Client *> clients)		{this->_clients = clients;};
 		void					setOperators(std::vector<Client *> operators)	{this->_operators = operators;};
+		std::string 			getMaskList(void);
 	private:
+		
 		std::vector<Client *>	_clients;
 		std::vector<Client *>	_operators;
 		std::string				_channelName;

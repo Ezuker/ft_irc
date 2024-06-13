@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 17:00:41 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/13 18:24:42 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	Server::_getCommand(std::string str)
 
 void	Server::_sendMessageToClient(std::string message, int i)
 {
-	send(this->_clients[i - 1]->getIdentifier(), message.c_str(), message.size(), 0);
+	send(this->_clients[i - 1]->getIdentifier(), message.c_str(), message.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 }
 
 void	Server::_checkMessage(std::string message, int i)
@@ -51,10 +51,9 @@ void	Server::_checkMessage(std::string message, int i)
 		{
 			if (this->_clients[i - 1]->getNickName().size() == 0 || this->_clients[i - 1]->getUserName().size() != 0)
 				break ;
-			toSet = message.substr(5, message.size() - 5);
+			toSet = split(message, ' ')[1];
 			this->_clients[i - 1]->setUserName(toSet);
 			std::cout << "Username set to : " << toSet << std::endl;
-			this->_sendMessageToClient(":JSPServer 001 " + this->_clients[i - 1]->getNickName() + ": Welcome to the Internet Relay Network <" + this->_clients[i - 1]->getNickName() + ">!<" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + "\n", i);
 			break ;
 		}
 		case 3: // JOIN	
