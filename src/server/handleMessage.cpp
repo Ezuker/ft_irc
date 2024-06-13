@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 16:26:17 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/13 17:00:41 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	Server::_checkMessage(std::string message, int i)
 		{
 			if (this->_clients[i - 1]->getNickName().size() != 0)
 				break ;
-			toSet = message.substr(5, message.size() - 6);
+			toSet = message.substr(5, message.size() - 5);
 			this->_clients[i - 1]->setNickName(toSet);
 			std::cout << "Nickname set to : " << toSet << std::endl;
 			break ;
@@ -51,7 +51,7 @@ void	Server::_checkMessage(std::string message, int i)
 		{
 			if (this->_clients[i - 1]->getNickName().size() == 0 || this->_clients[i - 1]->getUserName().size() != 0)
 				break ;
-			toSet = message.substr(5, message.size() - 6);
+			toSet = message.substr(5, message.size() - 5);
 			this->_clients[i - 1]->setUserName(toSet);
 			std::cout << "Username set to : " << toSet << std::endl;
 			this->_sendMessageToClient(":JSPServer 001 " + this->_clients[i - 1]->getNickName() + ": Welcome to the Internet Relay Network <" + this->_clients[i - 1]->getNickName() + ">!<" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + "\n", i);
@@ -66,7 +66,7 @@ void	Server::_checkMessage(std::string message, int i)
 				this->_sendMessageToClient("JOIN command entered without # (JOIN #channel)", i);
 				break ;
 			}
-			toSet = message.substr(6, message.size() - 7);
+			toSet = message.substr(6, message.size() - 6);
 			Channel *channelCheck = this->_channelExists(toSet);
 			if (channelCheck)
 				this->_joinChannel(channelCheck, i); // Debug pour le moment 
