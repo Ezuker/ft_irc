@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/12 18:00:27 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/13 02:11:37 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,21 @@ struct clientData {
 class Client
 {
 	public:
-        Client(int32_t id) : _identifier(id)            {std::cout << "Client :" << id << " saved." << std::endl;};
-        ~Client() {};
-        void        setNickName(std::string nickName)   {this->_names.nickName = nickName;};
-        void        setHostName(std::string hostName)   {this->_names.hostName = hostName;};
-        void        setUserName(std::string userName)   {this->_names.userName = userName;};
-        std::string getUserName(void) const             {return this->_names.userName;};
-        std::string getHostName(void) const             {return this->_names.hostName;};
-        std::string getNickName(void) const             {return this->_names.nickName;};
-        unsigned int     getIdentifier(void) const           {return _identifier;};
+                Client(int32_t id) : _identifier(id)            {std::cout << "Client :" << id << " saved." << std::endl;};
+                ~Client() {};
+                void        setNickName(std::string nickName)   {this->_names.nickName = nickName;};
+                void        setHostName(std::string hostName)   {this->_names.hostName = hostName;};
+                void        setUserName(std::string userName)   {this->_names.userName = userName;};
+                void        setAccess(bool access)              {this->_access = access;};
+                bool getAccess(void) const                      {return this->_access;};
+                std::string getUserName(void) const             {return this->_names.userName;};
+                std::string getHostName(void) const             {return this->_names.hostName;};
+                std::string getNickName(void) const             {return this->_names.nickName;};
+                unsigned int     getIdentifier(void) const           {return _identifier;};
 	private:
 		clientData      _names;
-        unsigned int     _identifier;
-
+                unsigned int    _identifier;
+                bool            _access;
 };
 
 #endif
