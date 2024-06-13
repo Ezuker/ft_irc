@@ -30,7 +30,7 @@ SRC = \
 	src/startServer.cpp \
 	src/Server.cpp \
 	src/handleMessage.cpp \
-	src/handleChannel.cpp \
+	src/server/handleChannel.cpp \
 
 INCLUDES = \
 	-I ./include/ \
@@ -62,8 +62,8 @@ $(NAME): $(OBJ)
 
 $(BUILD_DIR)%.o: %.cpp
 	@ \
+	mkdir -p $(@D); \
 	if [ $(IS_COMPILING) -eq 0 ]; then \
-		mkdir -p $(@D) ./build; \
 		echo; \
 		echo "$(_BOLD)$(_CYAN)Entering ($(_RED)./src$(_CYAN))$(_END)"; \
 		echo; \
