@@ -25,6 +25,8 @@ _IWHITE=$'\033[47m
 
 SRC = \
 	src/main.cpp \
+	src/utils/strtrim.cpp \
+	src/utils/split.cpp \
 	src/server/init.cpp \
 	src/server/manageClient.cpp \
 	src/server/startServer.cpp \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   global.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/13 05:01:58 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:17:54 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 // readEvent
 # include <vector>
 # include <iostream>
-# include <iostream>
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
@@ -30,5 +29,8 @@
 # include <algorithm>
 # include <stdlib.h>
 # include <cstring>
+
+std::string	strtrim(std::string &s);
+std::vector<std::string> split(std::string toSplit, char splitter);
 
 #endif

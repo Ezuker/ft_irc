@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 13:49:54 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:26:17 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,10 +136,15 @@ int	Server::_handleMessage(unsigned int &i)
 	if (bytes_received > 0 && i > 0)
 	{
 		std::string message(buffer, bytes_received);
-		if (this->_clients[i - 1]->getAccess())
-			this->_checkMessage(message, i);
-		else 
-			this->_checkPassword(message, i);
+		std::vector<std::string> messages = split(message, '\n');
+		for (size_t messageIndex = 0; messageIndex < messages.size(); messageIndex++)
+		{
+			messages[messageIndex] = strtrim(messages[messageIndex]);
+			if (this->_clients[i - 1]->getAccess())
+				this->_checkMessage(messages[messageIndex], i);
+			else 
+				this->_checkPassword(messages[messageIndex], i);
+		}
 	}
 	return (1);
 }
