@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getMask.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 18:55:42 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/13 19:34:55 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ std::string Channel::getMaskList(void)
 	for (; it != this->_clients.end(); ++it)
 	{
 		if (it == this->_clients.begin())
-			result += ":" + (*it)->getNickName() + "!" + (*it)->getUserName() + "@" + (*it)->getHostName();
+			result += ":@" + (*it)->getNickName() + "!" + (*it)->getUserName() + "@" + (*it)->getHostName();
 		else
 			result += " " + (*it)->getNickName() + "!" + (*it)->getUserName() + "@" + (*it)->getHostName();
 		

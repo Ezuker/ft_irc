@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleChannel.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 05:29:21 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 18:52:21 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/13 19:45:54 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	Server::_createChannel(std::string name, int i)
 	message = ":" + this->_clients[i - 1]->getNickName() + "!" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + " JOIN :#" + name + "\n";
 	this->_sendMessageToClient(message, i);
 	this->_clients[i - 1]->setCurrentChannel(name);
-	this->_joinChannel(newChannel, i);
+	// this->_joinChannel(newChannel, i);
 	std::string response = ":" + this->_clients[i - 1]->getHostName() + " 331 " + this->_clients[i - 1]->getNickName() + " TOPIC #" + name + " :No topic is set\n";
 	this->_sendMessageToClient(response, i);
 	response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " @ #" + name + " :" + this->_clients[i - 1]->getNickName() + "\n";
@@ -62,9 +62,18 @@ void	Server::_joinChannel(Channel *channel, int i)
 	channel->setClients(clients);
 	this->_clients[i - 1]->setCurrentChannel(channel->getChannelName());
 	std::string list;
-	channel->getMaskList();
-	message = ":" + this->_clients[i - 1]->getNickName() + this->_clients[i - 1]->getUserName() + this->_clients[i - 1]->getHostName() + " JOIN :#" + channel->getChannelName() + "\n";
+	message = ":" + this->_clients[i - 1]->getNickName() + "!" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + " JOIN :#" + channel->getChannelName() + "\n";
 	this->_sendMessageToClient(message, i);
+	std::string response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " = #" + channel->getChannelName() + " " + channel->getMaskList() + "\n";
+	this->_sendMessageToClient(response, i);
+	response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + channel->getChannelName() + " :End of /NAMES list.\n";
+	this->_sendMessageToClient(response, i);
+	response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " @ #" + channel->getChannelName() + " :@" + this->_clients[i - 1]->getNickName() + "\n";
+	this->_sendMessageToClient(response, i);
+	response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + channel->getChannelName() + " :End of /NAMES list.\n";
+	this->_sendMessageToClient(response, i);
+	response = ":" + this->_clients[i - 1]->getHostName() + " 324 " + this->_clients[i - 1]->getNickName() + " #" + channel->getChannelName() + " tn\n";
+	this->_sendMessageToClient(response, i);
  }
 
 void Server::_sendMessageToChannelClients(Client *sender, const std::string &message)
