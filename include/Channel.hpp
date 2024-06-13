@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:32:46 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/13 18:51:22 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/14 00:56:47 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ class Channel
 		void					setClients(std::vector<Client *> clients)		{this->_clients = clients;};
 		void					setOperators(std::vector<Client *> operators)	{this->_operators = operators;};
 		std::string 			getMaskList(void);
+		std::string 			getMaskList2(void);
+
 	private:
 		
 		std::vector<Client *>	_clients;

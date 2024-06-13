@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/13 06:59:38 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/14 00:59:46 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@ class	Server
 		int		_authClients();
 		int		_saveClient(int client_sock);
 		//	Channel
-		void	_joinChannel(Channel *channel, int i);
+		// void	_joinChannel(Channel *channel, int i);
 		Channel	* _channelExists(std::string channel);
 		int		_createChannel(std::string channel, int i);
+		void 	refreshList(Channel *channel);
 		void	_sendMessageToChannelClients(Client *sender, const std::string &message);
 	// Attributs
 		// Vector

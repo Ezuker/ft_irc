@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 18:24:42 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/14 01:05:20 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,13 @@ void	Server::_checkMessage(std::string message, int i)
 			toSet = message.substr(6, message.size() - 6);
 			Channel *channelCheck = this->_channelExists(toSet);
 			if (channelCheck)
-				this->_joinChannel(channelCheck, i); // Debug pour le moment 
+			{
+				std::vector<Client *> test = channelCheck->getClients();
+				test.push_back(this->_clients[i - 1]);
+				channelCheck->setClients(test);
+				this->refreshList(channelCheck);
+				// this->_joinChannel(channelCheck, i); // Debug pour le moment 
+			}
 			else
 				this->_createChannel(toSet, i);
 			break ;

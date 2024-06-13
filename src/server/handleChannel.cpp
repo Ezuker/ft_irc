@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 05:29:21 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 19:45:54 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/14 01:10:11 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,46 +35,39 @@ int	Server::_createChannel(std::string name, int i)
 	this->_sendMessageToClient(message, i);
 	message = ":" + this->_clients[i - 1]->getNickName() + "!" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + " JOIN :#" + name + "\n";
 	this->_sendMessageToClient(message, i);
-	this->_clients[i - 1]->setCurrentChannel(name);
-	// this->_joinChannel(newChannel, i);
-	std::string response = ":" + this->_clients[i - 1]->getHostName() + " 331 " + this->_clients[i - 1]->getNickName() + " TOPIC #" + name + " :No topic is set\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " @ #" + name + " :" + this->_clients[i - 1]->getNickName() + "\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + name + " :End of /NAMES list.\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " @ #" + name + " :@" + this->_clients[i - 1]->getNickName() + "\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + name + " :End of /NAMES list.\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 324 " + this->_clients[i - 1]->getNickName() + " #" + name + " tn\n";
-	this->_sendMessageToClient(response, i);
+	this->refreshList(newChannel);
 	return (1);
 }
 
-void	Server::_joinChannel(Channel *channel, int i)
+void	Server::refreshList(Channel *channel)
 {
-	std::string message;
-	std::vector<Client *> clients;
+	std::vector<Client *> clients = channel->getClients();
+	std::string	toSend;
+	for (unsigned int i = 0; i < channel->getClients().size(); i++)
+	{
+		toSend = ":" + clients[i]->getNickName() + "!" + clients[i]->getUserName() + "@" + clients[i]->getHostName() + " JOIN :#" + channel->getChannelName() + "\n";
+		send(clients[i]->getIdentifier(), toSend.c_str(), toSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+		toSend = ":" + clients[i]->getHostName() + " 353 " + clients[i]->getNickName() + " = #" + channel->getChannelName() + " " + channel->getMaskList() + "\n";
+		send(clients[i]->getIdentifier(), toSend.c_str(), toSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+		toSend = ":" + clients[i]->getHostName() + " 366 " + clients[i]->getNickName() + " #" + channel->getChannelName() + " :End of /NAMES list.\n";
+		send(clients[i]->getIdentifier(), toSend.c_str(), toSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+		toSend = ":" + clients[i]->getHostName() + " 353 " + clients[i]->getNickName() + " @ #" + channel->getChannelName() + " " + channel->getMaskList2() + "\n";
+		send(clients[i]->getIdentifier(), toSend.c_str(), toSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+	}
+}
 
-	clients = channel->getClients();
-	clients.push_back(this->_clients[i - 1]);
-	channel->setClients(clients);
-	this->_clients[i - 1]->setCurrentChannel(channel->getChannelName());
-	std::string list;
-	message = ":" + this->_clients[i - 1]->getNickName() + "!" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + " JOIN :#" + channel->getChannelName() + "\n";
-	this->_sendMessageToClient(message, i);
-	std::string response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " = #" + channel->getChannelName() + " " + channel->getMaskList() + "\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + channel->getChannelName() + " :End of /NAMES list.\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 353 " + this->_clients[i - 1]->getNickName() + " @ #" + channel->getChannelName() + " :@" + this->_clients[i - 1]->getNickName() + "\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + channel->getChannelName() + " :End of /NAMES list.\n";
-	this->_sendMessageToClient(response, i);
-	response = ":" + this->_clients[i - 1]->getHostName() + " 324 " + this->_clients[i - 1]->getNickName() + " #" + channel->getChannelName() + " tn\n";
-	this->_sendMessageToClient(response, i);
- }
+// void	Server::_joinChannel(Channel *channel, int i)
+// {
+// 	std::string message;
+// 	std::vector<Client *> clients;
+
+// 	std::string list;
+	
+// 	// response = ":" + this->_clients[i - 1]->getHostName() + " 366 " + this->_clients[i - 1]->getNickName() + " #" + channel->getChannelName() + " :End of /NAMES list.\n";
+// 	// this->_sendMessageToClient(response, i);
+// 	// response = ":" + this->_clients[i - 1]->getHostName() + " 324 " + this->_clients[i - 1]->getNickName() + " #" + channel->getChannelName() + " tn\n";
+// 	// this->_sendMessageToClient(response, i);
+//  }
 
 void Server::_sendMessageToChannelClients(Client *sender, const std::string &message)
 {
