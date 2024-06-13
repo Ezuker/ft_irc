@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/13 06:46:37 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/13 14:11:29 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class Client
 		clientData      _names;
 		unsigned int    _identifier;
 		bool            _access;
-		std::string	_currentChannel;
+		std::string		_currentChannel;
 };
 
 #endif

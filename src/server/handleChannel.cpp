@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 05:29:21 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 11:01:46 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/13 14:10:43 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,10 @@ Channel	*Server::_channelExists(std::string name)
 int	Server::_createChannel(std::string name, int i)
 {
 	std::string message;
-	std::string hostName = this->_clients[i - 1]->getHostName();
 	
 	Channel *newChannel = new Channel(name, this->_clients[i - 1]);
 	this->_channels.push_back(newChannel);
-	 message = ":" + this->_clients[i - 1]->getNickName() + "!~" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + " JOIN #" + name + "\n";
+	message = ":" + this->_clients[i - 1]->getNickName() + "!~" + this->_clients[i - 1]->getUserName() + "@" + this->_clients[i - 1]->getHostName() + " JOIN :#" + name + "\n";
 	this->_sendMessageToClient(message, i);
 	this->_clients[i - 1]->setCurrentChannel(name);
 	this->_joinChannel(newChannel, i);

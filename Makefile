@@ -25,11 +25,11 @@ _IWHITE=$'\033[47m
 
 SRC = \
 	src/main.cpp \
-	src/init.cpp \
-	src/manageClient.cpp \
-	src/startServer.cpp \
-	src/Server.cpp \
-	src/handleMessage.cpp \
+	src/server/init.cpp \
+	src/server/manageClient.cpp \
+	src/server/startServer.cpp \
+	src/server/Server.cpp \
+	src/server/handleMessage.cpp \
 	src/server/handleChannel.cpp \
 
 INCLUDES = \
