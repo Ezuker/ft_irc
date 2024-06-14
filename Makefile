@@ -34,6 +34,9 @@ SRC = \
 	src/server/handleMessage.cpp \
 	src/server/handleChannel.cpp \
 	src/channel/getMask.cpp \
+	src/commands/nickname.cpp \
+	src/commands/username.cpp \
+	src/commands/join.cpp \
 
 INCLUDES = \
 	-I ./include/ \

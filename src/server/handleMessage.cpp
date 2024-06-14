@@ -6,13 +6,11 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/14 02:36:30 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:20:31 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include "Channel.hpp"
-#include "global.hpp"
+#include "commands.hpp"
 
 int	Server::_getCommand(std::string str)
 {
@@ -30,50 +28,6 @@ int	Server::_getCommand(std::string str)
 void	Server::_sendMessageToClient(std::string message, int i)
 {
 	send(this->_clients[i - 1]->getIdentifier(), message.c_str(), message.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-}
-
-static void	nicknameCase(Client & cl, std::string const & message)
-{
-	std::string toSet;
-	
-	if (cl.getNickName().size() != 0)
-		return ;
-	toSet = message.substr(5, message.size() - 5); //NICK test
-	cl.setNickName(toSet);
-	std::cout << "Nickname set to : " << toSet << std::endl;
-	return ;
-}
-
-static void	usernameCase(Client & cl, std::string const & message)
-{
-	std::string toSet;
-	
-	if (cl.getNickName().size() == 0 || cl.getUserName().size() != 0)
-		return ;
-	toSet = split(message, ' ')[1]; //USERNAME bcarolle 0 *: realname
-	cl.setUserName(toSet);
-	std::cout << "Username set to : " << toSet << std::endl;
-}
-
-void	Server::joinChannel(Client & cl, std::string const & message, int const & i)
-{
-	std::string toSet;
-	
-	if (cl.getNickName().size() == 0 || cl.getUserName().size() == 0)
-		return ;
-	if (message.size() >= 6 && message[5] != '#')
-		return ;
-	toSet = message.substr(6, message.size() - 6);
-	Channel *channelCheck = this->_channelExists(toSet);
-	if (channelCheck)
-	{
-		channelCheck->getClients().push_back(&cl);
-		cl.getBelongChannel().push_back(channelCheck);
-		this->refreshList(channelCheck);
-	}
-	else
-		this->_createChannel(toSet, i);
-	return ;
 }
 
 void	Server::_checkMessage(std::string message, int i)
