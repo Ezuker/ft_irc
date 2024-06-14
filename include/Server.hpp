@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/14 02:36:00 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:41:59 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class	Server
 		Server(unsigned short port, std::string password, int fdSocketServ);
 		~Server();
         int     startServer();
+		
 	private:
 	// Function
         int     _initServer();
@@ -32,10 +33,15 @@ class	Server
         void	_removeClient(unsigned int &index);
         void    _checkPassword(std::string message, int i);
         void    _checkMessage(std::string message, int i);
-		void	_sendMessageToClient(std::string message, int i);
+		void	_sendMessageToClient(const std::string & message, Client *client);
+
 		int		_getCommand(std::string str);
 		int		_authClients();
 		int		_saveClient(int client_sock);
+		void	_nicknameCase(Client & cl, std::string const & message);
+		void	_usernameCase(Client & cl, std::string const & message);
+		void	_privmsgCase(Client & cl, std::string const & message);
+
 		//	Channel
 		void	joinChannel(Client & cl, std::string const & message, int const & i);
 		Channel	* _channelExists(std::string channel);

@@ -37,6 +37,7 @@ SRC = \
 	src/commands/nickname.cpp \
 	src/commands/username.cpp \
 	src/commands/join.cpp \
+	src/commands/privmsg.cpp \
 
 INCLUDES = \
 	-I ./include/ \

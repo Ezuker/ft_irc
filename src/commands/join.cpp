@@ -6,11 +6,11 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/14 16:19:41 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:27:47 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "commands.hpp"
+#include "Server.hpp"
 
 void	Server::joinChannel(Client & cl, std::string const & message, int const & i)
 {
@@ -25,7 +25,7 @@ void	Server::joinChannel(Client & cl, std::string const & message, int const & i
 	if (channelCheck)
 	{
 		channelCheck->getClients().push_back(&cl);
-		cl.getBelongChannel().push_back(channelCheck);
+		// cl.getBelongChannel().push_back(channelCheck);
 		this->refreshList(channelCheck);
 	}
 	else
@@ -59,7 +59,7 @@ int	Server::_createChannel(std::string name, int i)
 	this->_clients[i - 1]->getBelongChannel().push_back(newChannel);
 	this->_channels.push_back(newChannel);
 	message = ":" + this->_clients[i - 1]->getHostName() + " MODE #" + name + " +tn\n";
-	this->_sendMessageToClient(message, i);
+	this->_sendMessageToClient(message, this->_clients[i - 1]);
 	this->refreshList(newChannel);
 	return (1);
 }
