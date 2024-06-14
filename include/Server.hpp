@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/14 18:41:59 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 01:01:31 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ class	Server
 		Channel	* _channelExists(std::string channel);
 		int		_createChannel(std::string channel, int i);
 		void 	refreshList(Channel *channel);
-		void	_sendMessageToChannelClients(Client *sender, const std::string &message);
 	// Attributs
 		// Vector
 		std::vector<Client *>	_clients;

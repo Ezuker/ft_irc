@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/14 19:12:46 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 01:01:25 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,6 @@ int	Server::_getCommand(std::string str)
 void	Server::_sendMessageToClient(const std::string & message, Client *client)
 {
 	send(client->getIdentifier(), message.c_str(), message.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-}
-
-void	Server::_sendMessageToChannelClients(Client *client, const std::string & message)
-{
-	std::string channel = split(message, ' ')[1];
-
-	if (channel.size() && channel[0] != '#' && client)
-	{
-		std::cout << "envoyer une erreur" << std::endl;
-		return ;
-	}
-	channel = channel.substr(1, channel.size() - 1);
-	std::cout << channel << std::endl;
-	Channel *toSend = this->_channelExists(channel);
-	if (!toSend)
-		return ;
-	std::string messageToSend = ":";
-	std::vector<Client *>::iterator it = toSend->getClients().begin();
-	for (; it != toSend->getClients().end(); ++it)
-	{
-		if (*it == client)
-			continue ;
-		messageToSend += client->getNickName() + "!" + client->getUserName() + "@" + client->getHostName() + " " + message  + "\n";
-		send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-		messageToSend = ":";
-	}
 }
 
 void	Server::_checkMessage(std::string message, int i)
