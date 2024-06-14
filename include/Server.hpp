@@ -6,13 +6,11 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/14 01:26:30 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/14 02:36:00 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-# define SERVER_HPP
-
+#pragma once
 # include "global.hpp"
 # include "Channel.hpp"
 # include "Client.hpp"
@@ -39,7 +37,7 @@ class	Server
 		int		_authClients();
 		int		_saveClient(int client_sock);
 		//	Channel
-		// void	_joinChannel(Channel *channel, int i);
+		void	joinChannel(Client & cl, std::string const & message, int const & i);
 		Channel	* _channelExists(std::string channel);
 		int		_createChannel(std::string channel, int i);
 		void 	refreshList(Channel *channel);
@@ -54,5 +52,3 @@ class	Server
 		std::string				_password;
 		int                     _fdSocketServ;
 };
-
-#endif

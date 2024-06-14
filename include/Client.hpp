@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/13 14:11:29 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/14 02:35:30 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_HPP
-# define CLIENT_HPP
+#pragma once
 
 # include <poll.h>
+# include "Channel.hpp"
 
 struct clientData {
 	std::string nickName;
@@ -21,27 +21,26 @@ struct clientData {
 	std::string userName;
 };
 
+class Channel;
 class Client
 {
 	public:
-		Client(int32_t id) : _identifier(id), _currentChannel("")	{std::cout << "Client :" << id << " saved." << std::endl;};
+		Client(int32_t id) : _identifier(id) {std::cout << "Client :" << id << " saved." << std::endl;};
 		~Client() {};
 		void		setNickName(std::string nickName)	{this->_names.nickName = nickName;};
 		void		setHostName(std::string hostName)	{this->_names.hostName = hostName;};
 		void		setUserName(std::string userName)	{this->_names.userName = userName;};
-		void		setCurrentChannel(std::string currentChannel){this->_currentChannel = currentChannel;};
-		void		setAccess(bool access)			{this->_access = access;};
-		bool		getAccess(void) const			{return this->_access;};
-		std::string	getCurrentChannel(void) const		{return this->_currentChannel;};
-		std::string	getUserName(void) const			{return this->_names.userName;};
-		std::string	getHostName(void) const			{return this->_names.hostName;};
-		std::string	getNickName(void) const			{return this->_names.nickName;};
+		void		setAccess(bool access)				{this->_access = access;};
+		void		setBelongChannel(std::vector<Channel *> &belongChannel) {this->_belongChannel = belongChannel;};
+		bool		getAccess(void) const				{return this->_access;};
+		std::string	getUserName(void) const				{return this->_names.userName;};
+		std::string	getHostName(void) const				{return this->_names.hostName;};
+		std::string	getNickName(void) const				{return this->_names.nickName;};
+		std::vector<Channel *>	&getBelongChannel(void) {return this->_belongChannel;};
 		unsigned int     getIdentifier(void) const		{return _identifier;};
 	private:
 		clientData      _names;
 		unsigned int    _identifier;
 		bool            _access;
-		std::string		_currentChannel;
+		std::vector<Channel *>	_belongChannel;
 };
-
-#endif

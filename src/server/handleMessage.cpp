@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/14 01:05:20 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/14 02:36:30 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,50 @@ void	Server::_sendMessageToClient(std::string message, int i)
 	send(this->_clients[i - 1]->getIdentifier(), message.c_str(), message.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 }
 
+static void	nicknameCase(Client & cl, std::string const & message)
+{
+	std::string toSet;
+	
+	if (cl.getNickName().size() != 0)
+		return ;
+	toSet = message.substr(5, message.size() - 5); //NICK test
+	cl.setNickName(toSet);
+	std::cout << "Nickname set to : " << toSet << std::endl;
+	return ;
+}
+
+static void	usernameCase(Client & cl, std::string const & message)
+{
+	std::string toSet;
+	
+	if (cl.getNickName().size() == 0 || cl.getUserName().size() != 0)
+		return ;
+	toSet = split(message, ' ')[1]; //USERNAME bcarolle 0 *: realname
+	cl.setUserName(toSet);
+	std::cout << "Username set to : " << toSet << std::endl;
+}
+
+void	Server::joinChannel(Client & cl, std::string const & message, int const & i)
+{
+	std::string toSet;
+	
+	if (cl.getNickName().size() == 0 || cl.getUserName().size() == 0)
+		return ;
+	if (message.size() >= 6 && message[5] != '#')
+		return ;
+	toSet = message.substr(6, message.size() - 6);
+	Channel *channelCheck = this->_channelExists(toSet);
+	if (channelCheck)
+	{
+		channelCheck->getClients().push_back(&cl);
+		cl.getBelongChannel().push_back(channelCheck);
+		this->refreshList(channelCheck);
+	}
+	else
+		this->_createChannel(toSet, i);
+	return ;
+}
+
 void	Server::_checkMessage(std::string message, int i)
 {
 	std::string toSet;
@@ -40,48 +84,17 @@ void	Server::_checkMessage(std::string message, int i)
 	{
 		case 1: // NICKNAME
 		{
-			if (this->_clients[i - 1]->getNickName().size() != 0)
-				break ;
-			toSet = message.substr(5, message.size() - 5);
-			this->_clients[i - 1]->setNickName(toSet);
-			std::cout << "Nickname set to : " << toSet << std::endl;
-			break ;
+			nicknameCase(*this->_clients[i - 1], message);
+			break;
 		}
 		case 2: // USERNAME
 		{
-			if (this->_clients[i - 1]->getNickName().size() == 0 || this->_clients[i - 1]->getUserName().size() != 0)
-				break ;
-			toSet = split(message, ' ')[1];
-			this->_clients[i - 1]->setUserName(toSet);
-			std::cout << "Username set to : " << toSet << std::endl;
+			usernameCase(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 3: // JOIN	
 		{
-			if (this->_clients[i - 1]->getNickName().size() == 0 || this->_clients[i - 1]->getUserName().size() == 0)
-				break ;
-			if (message.size() >= 6 && message[5] != '#')
-			{
-				this->_sendMessageToClient("JOIN command entered without # (JOIN #channel)", i);
-				break ;
-			}
-			toSet = message.substr(6, message.size() - 6);
-			Channel *channelCheck = this->_channelExists(toSet);
-			if (channelCheck)
-			{
-				std::vector<Client *> test = channelCheck->getClients();
-				test.push_back(this->_clients[i - 1]);
-				channelCheck->setClients(test);
-				this->refreshList(channelCheck);
-				// this->_joinChannel(channelCheck, i); // Debug pour le moment 
-			}
-			else
-				this->_createChannel(toSet, i);
-			break ;
-		}
-		case 4:
-		{
-			this->_sendMessageToClient("t con ou quoi benoit tu l'as deja mis\n", i);
+			this->joinChannel(*this->_clients[i - 1], message, i);
 			break ;
 		}
 		default:
@@ -92,20 +105,9 @@ void	Server::_checkMessage(std::string message, int i)
 				break;
 			}
 			if (this->_clients[i - 1]->getUserName().size() == 0)
-			{
 				this->_sendMessageToClient("451 : Please register a USERNAME (USER username)\n", i);
-				break;
-			}
-			if (this->_clients[i - 1]->getCurrentChannel().size() > 0)
-				this->_sendMessageToChannelClients(this->_clients[i - 1], message);
-			else
-			{
-				this->_sendMessageToClient("Essaye JOIN (JOIN #channel) sur deux nc ma langue de boeuf ;)\n", i);
-				break ;
-			}
 		}
 	}
-	// std::cout << message.substr(0, message.size() - 1) << std::endl;
 }
 
 void	Server::_checkPassword(std::string message, int i)
