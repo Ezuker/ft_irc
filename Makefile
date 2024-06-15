@@ -38,6 +38,8 @@ SRC = \
 	src/commands/username.cpp \
 	src/commands/join.cpp \
 	src/commands/privmsg.cpp \
+	src/commands/kick.cpp \
+	src/commands/pass.cpp \
 
 INCLUDES = \
 	-I ./include/ \

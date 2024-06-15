@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/14 02:35:30 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 05:44:51 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ class Client
 		std::string	getHostName(void) const				{return this->_names.hostName;};
 		std::string	getNickName(void) const				{return this->_names.nickName;};
 		std::vector<Channel *>	&getBelongChannel(void) {return this->_belongChannel;};
-		unsigned int     getIdentifier(void) const		{return _identifier;};
+		int				_isInChannel(Channel const & channel);
+		unsigned int	getIdentifier(void) const		{return _identifier;};
 	private:
 		clientData      _names;
 		unsigned int    _identifier;

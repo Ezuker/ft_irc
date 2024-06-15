@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/14 18:17:03 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 05:55:09 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,22 @@ static	Client	*nicknameExist(std::vector<Client *> &client, std::string nickname
 
 void	Server::_nicknameCase(Client & cl, std::string const & message)
 {
-	std::string toSet;
+	std::string toSet = message;
 	
-	toSet = message.substr(5, message.size() - 5);
-	if (nicknameExist(this->_clients, toSet))
+	if (!std::strncmp(message.c_str(), "NICK ", 5))
 	{
-		std::string err = "443 " + toSet + " Nickname already in use";
-		_sendMessageToClient(err, &cl);
+		toSet = message.substr(5, message.size() - 5);
+		if (nicknameExist(this->_clients, toSet))
+			this->_sendMessageToClient(ERR_NICKNAMEINUSE, &cl);
+		else
+		{
+			cl.setNickName(toSet);
+			std::cout << "Nickname set to : " << toSet << std::endl;
+		}
 	}
+	else if (message.size() == 4)
+		this->_sendMessageToClient(ERR_NONICKNAMEGIVEN, &cl);
 	else
-	{
-		cl.setNickName(toSet);
-		std::cout << "Nickname set to : " << toSet << std::endl;
-	}
+		this->_sendMessageToClient("UNKNOWN COMMAND\n", &cl);
 	return ;
 }

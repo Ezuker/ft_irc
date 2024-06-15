@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/14 18:27:47 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 05:38:59 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ int	Server::_createChannel(std::string name, int i)
 {
 	std::string message;
 	
+	if (!this->_checkChannelName(name))
+	{
+		// erreur
+	}
 	Channel *newChannel = new Channel(name, this->_clients[i - 1]);
 	this->_clients[i - 1]->getBelongChannel().push_back(newChannel);
 	this->_channels.push_back(newChannel);
