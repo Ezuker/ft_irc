@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:34:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 01:57:33 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/15 06:32:24 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ void	Server::_privmsgCase(Client & client, std::string const & message)
 		std::cout << "envoyer une erreur" << std::endl;
 		return ;
 	}
-	channel = channel.substr(1, channel.size() - 1);
-	std::cout << channel << std::endl;
 	Channel *toSend = this->_channelExists(channel);
 	if (!toSend)
 		return ;

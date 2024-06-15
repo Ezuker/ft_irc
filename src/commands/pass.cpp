@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 02:56:26 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 05:13:47 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 06:41:37 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	Server::_checkPassword(Client &cl, std::string message)
 	{
 		if (message == "PASS")
 		{
-			this->_sendMessageToClient("PASS " + (std::string)ERR_NEEDMOREPARAMS, &cl);
+			this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "PASS"), &cl);
 			return ;
 		}
 		else if (std::strncmp(message.c_str(), "PASS ", 5))
@@ -37,11 +37,11 @@ void	Server::_checkPassword(Client &cl, std::string message)
 		std::string p_try = message.substr(5, message.size() - 5);
 		p_try = strtrim(p_try);
 		if (!p_try.size())
-			this->_sendMessageToClient("PASS " + (std::string)ERR_NEEDMOREPARAMS, &cl);
+			this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "PASS"), &cl);
 		else if (p_try == this->_password)
 			cl.setAccess(true);
 		else
-			this->_sendMessageToClient(ERROR_PW_MISMATCH, &cl);
+			this->_sendMessageToClient(ERR_PASSWDMISMATCH(cl.getNickName()), &cl);
 	}
 	else
 		this->_sendMessageToClient(ERROR_PW, &cl);

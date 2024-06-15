@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 05:55:09 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 06:57:19 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 	{
 		toSet = message.substr(5, message.size() - 5);
 		if (nicknameExist(this->_clients, toSet))
-			this->_sendMessageToClient(ERR_NICKNAMEINUSE, &cl);
+			this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NICKNAMEINUSE(cl.getNickName()), &cl);
 		else
 		{
 			cl.setNickName(toSet);
@@ -38,7 +38,7 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 		}
 	}
 	else if (message.size() == 4)
-		this->_sendMessageToClient(ERR_NONICKNAMEGIVEN, &cl);
+		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NONICKNAMEGIVEN(cl.getNickName()), &cl);
 	else
 		this->_sendMessageToClient("UNKNOWN COMMAND\n", &cl);
 	return ;

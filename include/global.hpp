@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 05:55:09 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 06:56:49 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,21 @@
 
 /*                                   ERRORS                                   */
 //PASS
-# define ERROR_PW_MISMATCH "Error (464): this password is incorrect\n"
+# define ERR_PASSWDMISMATCH(n) "464 " + n + " :Passwod Dismatch\n"
 # define ERROR_PW "Error (464): please enter the password 'PASS (PASSWORD)'\n"
 
 //NICK
-# define ERR_NICKNAMEINUSE "Error (433): this Nickname is already used\n"
-# define ERR_NONICKNAMEGIVEN "Error (431): No nickname given in parameter\n"
+# define ERR_NICKNAMEINUSE(n) "433" + n + " this Nickname is already used\n"
+# define ERR_NONICKNAMEGIVEN(n) "431 " + n + " :No nickname given in parameter\n"
 
 //CHANNEL
-# define ERR_NOSUCHCHANNEL "Error (403): No such channel\n"
-# define ERR_CHANOPRIVSNEEDED "Error (482): No such permission\n"
-# define ERR_NOTONCHANNEL "Error (442): Not on channel\n"
-# define ERR_BADCHANMASK "Error (476): The specified channel name is invalid.\n"
+# define ERR_NOSUCHCHANNEL(n, c) "403 " + n + " " + c + " :No such channel\n"
+# define ERR_CHANOPRIVSNEEDED(n, c) "482 " + n + " " + c + " :No such permission\n"
+# define ERR_NOTONCHANNEL(n, c) "442 " + n + " " + c + " :Not on channel\n"
+# define ERR_BADCHANMASK(n) "476 " + n + " :The specified channel name is invalid.\n"
 
 //GLOBAL
-# define ERR_NEEDMOREPARAMS "Error (461): Need more params\n"
+# define ERR_NEEDMOREPARAMS(n, c) "461 " + n + " " + c + " : Need more params\n"
 # define ERR_ALREADYREGISTERED "Error (462): You are already registered\n"
 
 /*                                                                            */

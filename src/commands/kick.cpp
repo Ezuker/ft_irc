@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 05:51:07 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 06:57:19 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,25 +38,25 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 	std::vector<std::string> tokens = split(message, ' ');
 	if (tokens.size() < 3)
 	{
-		this->_sendMessageToClient(ERR_NEEDMOREPARAMS, &cl);
+		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "KICK"), &cl);
 		return ;
 	}
 	std::string channelName = tokens[1];
 	std::string userToKick = tokens[2];
 	if (channelName.empty())
 	{
-		this->_sendMessageToClient(ERR_BADCHANMASK, &cl);
+		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_BADCHANMASK(cl.getNickName()), &cl);
 		return ;
 	}
-	Channel *channel = this->_channelExists(channelName.substr(1, channelName.size() - 1));
+	Channel *channel = this->_channelExists(channelName);
 	if (!channel)
 	{
-		this->_sendMessageToClient(ERR_NOSUCHCHANNEL, &cl);
+		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), channelName), &cl);
 		return ;
 	}
 	if (!cl._isInChannel(*channel))
 	{
-		this->_sendMessageToClient(ERR_NOTONCHANNEL, &cl);
+		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl);
 		return ;
 	}
 	std::vector<Client *> operatorList = channel->getOperators();
@@ -74,12 +74,19 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 		}
 		if (it != clientList.end())
 		{
+			std::string messageToSend;
 			std::vector<Client *>::iterator tmp = it;
-			std::string messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + " :" + cl.getNickName() + "\n";
+			std::cout << "token = " << tokens[4] << std::endl;
+			if (tokens.size() == 4)
+				messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + " :" + tokens[4] + "\n";
+			else
+				messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + " :" + cl.getNickName() + "\n";
 			std::vector<Client *>::iterator itmachin = clientList.begin();
 			for (; itmachin != clientList.end(); ++itmachin)
 				send((*itmachin)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 			clientList.erase(tmp);
 		}
 	}
+	else
+		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()), &cl);
 }
