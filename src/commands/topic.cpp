@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 07:44:42 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 21:45:22 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:30:12 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ void	Server::_changeTopic(Client & cl, std::string message)
 
 	channel = this->_channelExists(tokens[1]);
 	if (!channel)
-	{
-		// no channel
-	}
+		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1]), &cl));
+	if (!cl._isInChannel(*channel))
+		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
 	std::vector<Client *> operatorList = channel->getOperators();
 	std::vector<Client *>::iterator toFind;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 22:15:05 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:32:00 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class	Server
 		void	_kickCase(Client & cl, std::string const & message);
 		void	_passCase(Client &cl, std::string const & message);
 		void	_quitCase(Client &cl, std::string const & message);
+		void	_partCase(Client & cl, std::string const & message);
 
 		//	Channel
 		void	joinChannel(Client & cl, std::string const & message, int const & i);

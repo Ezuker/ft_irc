@@ -41,6 +41,7 @@ SRC = \
 	src/commands/kick.cpp \
 	src/commands/pass.cpp \
 	src/commands/topic.cpp \
+	src/commands/part.cpp \
 
 INCLUDES = \
 	-I ./include/ \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 22:13:52 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:39:58 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (6);
 	if (!std::strncmp(str.c_str(), "TOPIC ", 6))
 		return (7);
+	if (!std::strncmp(str.c_str(), "PART ", 5))
+		return (8);
 	return (0);
 }
 
@@ -78,6 +80,11 @@ void	Server::_checkMessage(std::string message, int i)
 		case 7: //TOPIC
 		{
 			this->_changeTopic(*this->_clients[i - 1], message);
+			break ;
+		}
+		case 8: //PART
+		{
+			this->_partCase(*this->_clients[i - 1], message);
 			break ;
 		}
 		default:
