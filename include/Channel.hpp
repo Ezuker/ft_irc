@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:32:46 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 21:18:58 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 00:11:59 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,14 @@
 
 # include "global.hpp"
 # include "Client.hpp"
+
+struct mode
+{
+	bool		invitation;
+	bool		changeTopic;
+	std::string password;
+	int			userLimit;
+};
 
 class Client;
 class Channel
@@ -31,6 +39,7 @@ class Channel
 		void					setChannelName(std::string name)				{this->_channelName = name;};
 		std::vector<Client *>	&getClients(void)								{return (this->_clients);};
 		std::vector<Client *>	&getOperators(void)								{return (this->_operators);};
+		struct mode				&getMode(void)									{return (this->_mode);};
 		void					setClients(std::vector<Client *> clients)		{this->_clients = clients;};
 		void					setOperators(std::vector<Client *> operators)	{this->_operators = operators;};
 		void					setLastChange(std::string const & lastChange)	{this->_lastChange = lastChange;_lastTopicChange = time(0);};
@@ -42,6 +51,7 @@ class Channel
 		std::string 			getOperatorList(void);
 		std::string 			getLastTopicChangeTime(void) const;
 
+
 	private:
 		
 		std::vector<Client *>	_clients;
@@ -51,4 +61,5 @@ class Channel
 		bool					_isTopic;
 		std::string				_lastChange;
 		time_t					_lastTopicChange;
+		struct mode				_mode;
 };

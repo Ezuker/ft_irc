@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 22:05:00 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 00:36:49 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,3 +45,5 @@ class Client
 		bool            _access;
 		std::vector<Channel *>	_belongChannel;
 };
+
+std::string	getMask(Client const &cl);

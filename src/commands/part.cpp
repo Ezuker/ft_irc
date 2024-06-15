@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 22:31:33 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 22:40:29 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/16 00:47:58 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,38 @@ void	Server::_partCase(Client & cl, std::string const & message)
 	if (tokens.size() < 2)
 		return ;
 	channel = this->_channelExists(tokens[1]);
+	if (!channel)
+		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1]), &cl));
+	if (!cl._isInChannel(*channel))
+		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
 	std::vector<Client *> clients = channel->getClients();
 	std::vector<Client *>::iterator it = clients.begin();
-	std::string messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + "\n";
+	std::string messageToSend = getMask(cl) + message + "\n";
 	for (; it != clients.end(); ++it)
 	{
 		send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);	
 	}
-	// :ehalliez__!ehalliezUse@Pony-q988mu.20.unyc.it PART #t :"Leaving"
+	std::vector<Client *>::iterator findClient;
+	std::vector<Client *>::iterator findOperator;
+	std::vector<Channel *>::iterator findChannel;
 	
+	findClient = find(channel->getClients().begin(), channel->getClients().end(), &cl);
+	if (findClient != channel->getClients().end())
+		channel->getClients().erase(findClient);
+	findOperator = find(channel->getOperators().begin(), channel->getOperators().end(), &cl);
+	if (findOperator != channel->getOperators().end())
+		channel->getOperators().erase(findOperator);
+	findChannel = find(cl.getBelongChannel().begin(), cl.getBelongChannel().end(), channel);
+	if (findChannel != cl.getBelongChannel().end())
+		cl.getBelongChannel().erase(findChannel);
+	if (channel->getClients().empty())
+	{
+		findChannel = find(this->_channels.begin(), this->_channels.end(), channel);
+		if (findChannel != cl.getBelongChannel().end())
+		{
+			delete *findChannel;
+			this->_channels.erase(findChannel);
+		}
+	}
+		
 }

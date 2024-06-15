@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 22:39:58 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/15 23:39:20 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (7);
 	if (!std::strncmp(str.c_str(), "PART ", 5))
 		return (8);
+	if (!std::strncmp(str.c_str(), "QUIT", 4))
+		return (9);
 	return (0);
 }
 
@@ -42,7 +44,7 @@ void	Server::_sendMessageToClient(const std::string & message, Client *client)
 	send(client->getIdentifier(), message.c_str(), message.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 }
 
-void	Server::_checkMessage(std::string message, int i)
+void	Server::_checkMessage(std::string message, unsigned int &i)
 {
 	std::cout << "message sent by client (hexchat): " << message << std::endl;
 	switch (this->_getCommand(message, this->_clients[i - 1]))
@@ -85,6 +87,11 @@ void	Server::_checkMessage(std::string message, int i)
 		case 8: //PART
 		{
 			this->_partCase(*this->_clients[i - 1], message);
+			break ;
+		}
+		case 9:
+		{
+			this->_removeClient(i);
 			break ;
 		}
 		default:

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 07:38:52 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/16 00:43:53 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 			std::cout << tokens.size() << std::endl;
 			std::cout << message << std::endl;
 			if (tokens.size() >= 4)
-				messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + "\n";
+				messageToSend = getMask(cl) + message + "\n";
 			else
-				messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + " :" + cl.getNickName() + "\n";
+				messageToSend = getMask(cl) + message + " :" + cl.getNickName() + "\n";
 			std::vector<Client *>::iterator itSender = clientList.begin();
 			for (; itSender != clientList.end(); ++itSender)
 				send((*itSender)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 22:32:00 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/15 23:39:18 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class	Server
         int     _addClient();
         void	_removeClient(unsigned int &index);
         void    _checkPassword(Client &cl, std::string message);
-        void    _checkMessage(std::string, int i);
+        void    _checkMessage(std::string, unsigned int &i);
 		void	_sendMessageToClient(const std::string & message, Client *client);
 
 		int		_getCommand(std::string str, Client *cl);
@@ -43,7 +43,6 @@ class	Server
 		void	_privmsgCase(Client & cl, std::string const & message);
 		void	_kickCase(Client & cl, std::string const & message);
 		void	_passCase(Client &cl, std::string const & message);
-		void	_quitCase(Client &cl, std::string const & message);
 		void	_partCase(Client & cl, std::string const & message);
 
 		//	Channel

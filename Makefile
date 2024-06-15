@@ -27,6 +27,7 @@ SRC = \
 	src/main.cpp \
 	src/utils/strtrim.cpp \
 	src/utils/split.cpp \
+	src/utils/getMask.cpp \
 	src/server/init.cpp \
 	src/server/manageClient.cpp \
 	src/server/startServer.cpp \
@@ -42,6 +43,7 @@ SRC = \
 	src/commands/pass.cpp \
 	src/commands/topic.cpp \
 	src/commands/part.cpp \
+	src/commands/quit.cpp \
 
 INCLUDES = \
 	-I ./include/ \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 07:44:42 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 22:30:12 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/16 00:47:13 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	Server::_changeTopic(Client & cl, std::string message)
 				if (channel->getLastChange().size())
 				{
 					std::string messageToSend = ":" + cl.getHostName() + " 332 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getTopic() + "\n";
-					messageToSend += ":" + cl.getHostName() + " 333 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getLastChange() + " " + channel->getLastTopicChangeTime() + "\n";
+					messageToSend += ":" + cl.getHostName() + " 333 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getLastChange() + channel->getLastTopicChangeTime() + "\n";
 					channel->setIsTopic(true);
 					for (; it != clientList.end(); ++it)
 						send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);	
@@ -59,13 +59,13 @@ void	Server::_changeTopic(Client & cl, std::string message)
 		}
 		else
 		{
-			std::string messageToSend = ":" + cl.getNickName() + "!" +  cl.getUserName() + "@" + cl.getHostName() + " " + message + "\n";
+			std::string messageToSend = getMask(cl) + message + "\n";
 			channel->setIsTopic(true);
 			if (tokens.size() > 2)
 				channel->setTopic(tokens[2]);
 			for (; it != clientList.end(); ++it)
 				send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-			channel->setLastChange(cl.getNickName() + "!" +  cl.getUserName() + "@" + cl.getHostName());
+			channel->setLastChange(getMask(cl));
 		}
 	}
 	else

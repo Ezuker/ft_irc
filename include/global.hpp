@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 21:16:06 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 00:41:14 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # define ERR_RPL_NOTOPIC(n, c) "331 " + n + " " + c + " :No topic set\n"
 
 //NICK
-# define ERR_NICKNAMEINUSE(n) "433" + n + " this Nickname is already used\n"
+# define ERR_NICKNAMEINUSE(n) "433 " + n + " this Nickname is already used\n"
 # define ERR_NONICKNAMEGIVEN(n) "431 " + n + " :No nickname given in parameter\n"
 
 //CHANNEL

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 06:56:07 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 01:02:28 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	Server::joinChannel(Client & cl, std::string const & message, int const & i
 		return ;
 	if (message.size() >= 6 && message[5] != '#')
 		return ;
+	// envoyer une erreur
 	toSet = message.substr(5, message.size() - 5);
 	Channel *channelCheck = this->_channelExists(toSet);
 	if (channelCheck)
@@ -39,7 +40,7 @@ void	Server::refreshList(Channel *channel)
 	std::string	toSend;
 	for (unsigned int i = 0; i < channel->getClients().size(); i++)
 	{
-		toSend = ":" + clients[i]->getNickName() + "!" + clients[i]->getUserName() + "@" + clients[i]->getHostName() + " JOIN :" + channel->getChannelName() + "\n";
+		toSend = getMask(*clients[i]) + "JOIN :" + channel->getChannelName() + "\n";
 		send(clients[i]->getIdentifier(), toSend.c_str(), toSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 		toSend = ":" + clients[i]->getHostName() + " 331 " + clients[i]->getNickName() + " TOPIC " + channel->getChannelName() + " :No topic set\n";
 		send(clients[i]->getIdentifier(), toSend.c_str(), toSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
@@ -60,6 +61,10 @@ int	Server::_createChannel(std::string name, int i)
 		// erreur
 	}
 	Channel *newChannel = new Channel(name, this->_clients[i - 1]);
+	newChannel->getMode().userLimit = -1;
+	newChannel->getMode().password = "";
+	newChannel->getMode().changeTopic = true;
+	newChannel->getMode().invitation = false;
 	this->_clients[i - 1]->getBelongChannel().push_back(newChannel);
 	this->_channels.push_back(newChannel);
 	message = ":" + this->_clients[i - 1]->getHostName() + " MODE #" + name + " +tn\n";
