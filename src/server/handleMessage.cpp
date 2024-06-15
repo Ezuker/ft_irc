@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 07:47:16 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:13:52 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	Server::_getCommand(std::string str, Client *cl)
 	if (!std::strncmp(str.c_str(), "NICK", 4))
 		return (1);
 	if (cl->getNickName().empty())
-		return (7);
+		return (0);
 	if (!std::strncmp(str.c_str(), "USER ", 5))
 		return (2);
 	if (cl->getUserName().empty())

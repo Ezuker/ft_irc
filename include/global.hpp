@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   global.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 20:42:33 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/15 21:16:06 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@
 # include <algorithm>
 # include <stdlib.h>
 # include <cstring>
+#include <sstream>
 # include <ctime>
 
 std::string	strtrim(std::string &s);

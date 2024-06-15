@@ -3,14 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 07:44:42 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 20:43:32 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/15 21:45:22 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+std::string Channel::getLastTopicChangeTime() const
+{
+	std::ostringstream oss;
+	
+	oss << this->_lastTopicChange;
+	std::string myString2 = oss.str();
+	return (myString2);
+}
 
 void	Server::_changeTopic(Client & cl, std::string message)
 {
@@ -39,7 +48,8 @@ void	Server::_changeTopic(Client & cl, std::string message)
 				channel->setIsTopic(!channel->getIsTopic());
 				if (channel->getLastChange().size())
 				{
-					std::string messageToSend = ":" + cl.getHostName() + " 333 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getLastChange() + " " + channel->getLastTopicChangeTime() + "\n";
+					std::string messageToSend = ":" + cl.getHostName() + " 332 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getTopic() + "\n";
+					messageToSend += ":" + cl.getHostName() + " 333 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getLastChange() + " " + channel->getLastTopicChangeTime() + "\n";
 					channel->setIsTopic(true);
 					for (; it != clientList.end(); ++it)
 						send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);	

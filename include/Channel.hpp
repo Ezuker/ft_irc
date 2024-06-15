@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:32:46 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 20:47:35 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/15 21:18:58 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,24 +31,16 @@ class Channel
 		void					setChannelName(std::string name)				{this->_channelName = name;};
 		std::vector<Client *>	&getClients(void)								{return (this->_clients);};
 		std::vector<Client *>	&getOperators(void)								{return (this->_operators);};
-		std::string 			getLastTopicChangeTime() const 					{
-			time_t		now = time(0);
-			struct tm	tstruct;
-			char		buf[80];
-
-			tstruct = *localtime(&now);
-			strftime(buf, sizeof(buf), "%", &tstruct);
-			return (buf);
-		};
 		void					setClients(std::vector<Client *> clients)		{this->_clients = clients;};
 		void					setOperators(std::vector<Client *> operators)	{this->_operators = operators;};
-		void					setLastChange(std::string const & lastChange)	{this->_lastChange = lastChange;_lastTopicChange = std::time(0);};
+		void					setLastChange(std::string const & lastChange)	{this->_lastChange = lastChange;_lastTopicChange = time(0);};
 		void					setTopic(std::string const & topic)				{this->_topic = topic;};
 		void					setIsTopic(bool value)							{this->_isTopic = value;};
 		std::string 			getMaskList(void);
 		std::string 			getMaskList2(void);
 		std::string 			getClientList(void);
 		std::string 			getOperatorList(void);
+		std::string 			getLastTopicChangeTime(void) const;
 
 	private:
 		
@@ -58,5 +50,5 @@ class Channel
 		std::string				_topic;
 		bool					_isTopic;
 		std::string				_lastChange;
-		time_t				_lastTopicChange;
+		time_t					_lastTopicChange;
 };

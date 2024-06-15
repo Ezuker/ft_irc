@@ -1,24 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   split.cpp                                          :+:      :+:    :+:   */
+/*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/13 16:12:10 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 21:16:08 by bcarolle         ###   ########.fr       */
+/*   Created: 2024/06/15 22:14:02 by bcarolle          #+#    #+#             */
+/*   Updated: 2024/06/15 22:15:19 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "global.hpp"
+#include "Server.hpp"
 
-std::vector<std::string> split(std::string toSplit, char splitter)
+void	Server::quitCase(Client &cl, std::string const & message)
 {
-	std::vector<std::string> result;
-	std::string word;
-	std::istringstream iss(toSplit);
-	while (std::getline(iss, word, splitter)) {
-		result.push_back(word);
-	}
-	return result;
+	
 }

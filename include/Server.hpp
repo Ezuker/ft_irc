@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 07:46:57 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:15:05 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class	Server
 		void	_privmsgCase(Client & cl, std::string const & message);
 		void	_kickCase(Client & cl, std::string const & message);
 		void	_passCase(Client &cl, std::string const & message);
+		void	_quitCase(Client &cl, std::string const & message);
 
 		//	Channel
 		void	joinChannel(Client & cl, std::string const & message, int const & i);
