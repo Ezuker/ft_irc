@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 06:07:40 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 07:46:57 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class	Server
 		int		_createChannel(std::string channel, int i);
 		void 	refreshList(Channel *channel);
 		bool	_checkChannelName(std::string const & name);
+		void	_changeTopic(Client & cl, std::string name);
 	// Attributs
 		// Vector
 		std::vector<Client *>	_clients;

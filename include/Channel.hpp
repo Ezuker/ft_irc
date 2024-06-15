@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:32:46 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/14 02:35:40 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 20:47:35 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,27 @@ class Channel
 			_operators.push_back(op);
 		};
 		~Channel() {};
-		std::string				getChannelName() const							{return (this->_channelName);};
+		std::string				getChannelName(void) const							{return (this->_channelName);};
+		std::string				getTopic(void) const								{return (this->_topic);};
+		std::string 			getLastChange(void)								{return (this->_lastChange);};
+		bool					&getIsTopic(void)									{return (this->_isTopic);};
 		void					setChannelName(std::string name)				{this->_channelName = name;};
 		std::vector<Client *>	&getClients(void)								{return (this->_clients);};
 		std::vector<Client *>	&getOperators(void)								{return (this->_operators);};
+		std::string 			getLastTopicChangeTime() const 					{
+			time_t		now = time(0);
+			struct tm	tstruct;
+			char		buf[80];
+
+			tstruct = *localtime(&now);
+			strftime(buf, sizeof(buf), "%", &tstruct);
+			return (buf);
+		};
 		void					setClients(std::vector<Client *> clients)		{this->_clients = clients;};
 		void					setOperators(std::vector<Client *> operators)	{this->_operators = operators;};
+		void					setLastChange(std::string const & lastChange)	{this->_lastChange = lastChange;_lastTopicChange = std::time(0);};
+		void					setTopic(std::string const & topic)				{this->_topic = topic;};
+		void					setIsTopic(bool value)							{this->_isTopic = value;};
 		std::string 			getMaskList(void);
 		std::string 			getMaskList2(void);
 		std::string 			getClientList(void);
@@ -40,4 +55,8 @@ class Channel
 		std::vector<Client *>	_clients;
 		std::vector<Client *>	_operators;
 		std::string				_channelName;
+		std::string				_topic;
+		bool					_isTopic;
+		std::string				_lastChange;
+		time_t				_lastTopicChange;
 };

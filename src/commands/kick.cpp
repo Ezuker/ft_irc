@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 06:57:19 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 07:38:52 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,33 +37,21 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 {
 	std::vector<std::string> tokens = split(message, ' ');
 	if (tokens.size() < 3)
-	{
-		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "KICK"), &cl);
-		return ;
-	}
+		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "KICK"), &cl));
 	std::string channelName = tokens[1];
 	std::string userToKick = tokens[2];
-	if (channelName.empty())
-	{
-		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_BADCHANMASK(cl.getNickName()), &cl);
-		return ;
-	}
+	if (!this->_checkChannelName(channelName))
+		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_BADCHANMASK(cl.getNickName()), &cl));
 	Channel *channel = this->_channelExists(channelName);
 	if (!channel)
-	{
-		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), channelName), &cl);
-		return ;
-	}
+		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), channelName), &cl));
 	if (!cl._isInChannel(*channel))
-	{
-		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl);
-		return ;
-	}
+		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
 	std::vector<Client *> operatorList = channel->getOperators();
-	std::vector<Client *>::iterator it;
+	std::vector<Client *>::iterator toFind;
 
-	it = find(operatorList.begin(), operatorList.end(), &cl);
-	if (it != operatorList.end())
+	toFind = find(operatorList.begin(), operatorList.end(), &cl);
+	if (toFind != operatorList.end())
 	{
 		std::vector<Client *> clientList = channel->getClients();
 		std::vector<Client *>::iterator it = clientList.begin();
@@ -76,14 +64,15 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 		{
 			std::string messageToSend;
 			std::vector<Client *>::iterator tmp = it;
-			std::cout << "token = " << tokens[4] << std::endl;
-			if (tokens.size() == 4)
-				messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + " :" + tokens[4] + "\n";
+			std::cout << tokens.size() << std::endl;
+			std::cout << message << std::endl;
+			if (tokens.size() >= 4)
+				messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + "\n";
 			else
 				messageToSend = ":" + cl.getNickName() + "!" + cl.getUserName() + "@" + cl.getHostName() + " " + message + " :" + cl.getNickName() + "\n";
-			std::vector<Client *>::iterator itmachin = clientList.begin();
-			for (; itmachin != clientList.end(); ++itmachin)
-				send((*itmachin)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+			std::vector<Client *>::iterator itSender = clientList.begin();
+			for (; itSender != clientList.end(); ++itSender)
+				send((*itSender)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 			clientList.erase(tmp);
 		}
 	}

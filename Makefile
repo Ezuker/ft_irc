@@ -40,6 +40,7 @@ SRC = \
 	src/commands/privmsg.cpp \
 	src/commands/kick.cpp \
 	src/commands/pass.cpp \
+	src/commands/topic.cpp \
 
 INCLUDES = \
 	-I ./include/ \

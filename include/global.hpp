@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   global.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 06:56:49 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 20:42:33 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 //PASS
 # define ERR_PASSWDMISMATCH(n) "464 " + n + " :Passwod Dismatch\n"
 # define ERROR_PW "Error (464): please enter the password 'PASS (PASSWORD)'\n"
+
+//TOPIC
+
+# define ERR_RPL_NOTOPIC(n, c) "331 " + n + " " + c + " :No topic set\n"
 
 //NICK
 # define ERR_NICKNAMEINUSE(n) "433" + n + " this Nickname is already used\n"
@@ -43,11 +47,12 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <unistd.h>
-# include <string.h>
+# include <string>
 # include <poll.h>
 # include <algorithm>
 # include <stdlib.h>
 # include <cstring>
+# include <ctime>
 
 std::string	strtrim(std::string &s);
 std::vector<std::string> split(std::string toSplit, char splitter);

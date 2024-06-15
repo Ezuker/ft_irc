@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 06:27:28 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/15 07:47:16 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	Server::_getCommand(std::string str, Client *cl)
 	if (!std::strncmp(str.c_str(), "USER ", 5))
 		return (2);
 	if (cl->getUserName().empty())
-		return (7);
+		return (0);
 	if (!std::strncmp(str.c_str(), "JOIN ", 5))
 		return (3);	
 	if (!std::strncmp(str.c_str(), "PASS", 4))
@@ -30,6 +30,8 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (5);
 	if (!std::strncmp(str.c_str(), "KICK ", 5))
 		return (6);
+	if (!std::strncmp(str.c_str(), "TOPIC ", 6))
+		return (7);
 	return (0);
 }
 
@@ -71,6 +73,11 @@ void	Server::_checkMessage(std::string message, int i)
 		case 6: //KICK
 		{
 			this->_kickCase(*this->_clients[i - 1], message);
+			break ;
+		}
+		case 7: //TOPIC
+		{
+			this->_changeTopic(*this->_clients[i - 1], message);
 			break ;
 		}
 		default:
