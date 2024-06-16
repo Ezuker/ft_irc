@@ -6,13 +6,13 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 08:56:51 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:46:39 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-void	Server::joinChannel(Client & cl, std::string & message, int const & i)
+void	Server::_joinChannel(Client & cl, std::string & message, int const & i)
 {
 	std::vector<std::string> toSet;
 
@@ -30,14 +30,14 @@ void	Server::joinChannel(Client & cl, std::string & message, int const & i)
 			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_BADCHANNELKEY(toSet[1]), &cl));
 		channelCheck->getClients().push_back(&cl);
 		cl.getBelongChannel().push_back(channelCheck);
-		this->refreshList(channelCheck);
+		this->_refreshList(channelCheck);
 	}
 	else
 		this->_createChannel(toSet[1], i);
 	return ;
 }
 
-void	Server::refreshList(Channel *channel)
+void	Server::_refreshList(Channel *channel)
 {
 	std::vector<Client *> clients = channel->getClients();
 	std::string	toSend;
@@ -74,6 +74,6 @@ int	Server::_createChannel(std::string name, int i)
 	this->_channels.push_back(newChannel);
 	message = ":" + this->_hostname + " MODE #" + name + " +tn\r\n";
 	this->_sendMessageToClient(message, this->_clients[i - 1]);
-	this->refreshList(newChannel);
+	this->_refreshList(newChannel);
 	return (1);
 }

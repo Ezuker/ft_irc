@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 09:13:45 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:46:29 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ class	Server
 		void	_manageOperator(Client &cl, std::vector<std::string> splitted, char action, Channel *channel);
 
 		//	Channel
-		void	joinChannel(Client & cl, std::string & message, int const & i);
+		void	_joinChannel(Client & cl, std::string & message, int const & i);
 		Channel	* _channelExists(std::string channel);
 		int		_createChannel(std::string channel, int i);
-		void 	refreshList(Channel *channel);
+		void 	_refreshList(Channel *channel);
 		bool	_checkChannelName(std::string const & name);
 		void	_changeTopic(Client & cl, std::string name);
 	// Attributs

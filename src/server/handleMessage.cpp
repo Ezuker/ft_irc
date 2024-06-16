@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 09:16:40 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:46:02 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 		}
 		case 3: // JOIN	
 		{
-			this->joinChannel(*this->_clients[i - 1], message, i);
+			this->_joinChannel(*this->_clients[i - 1], message, i);
 			break ;
 		}
 		case 4: //PASS
@@ -110,6 +110,7 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 		}
 		default:
 		{
+			
 			if (this->_clients[i - 1]->getNickName().empty())
 			{
 				this->_sendMessageToClient("451 : Please register a NICKNAME (NICK nickname) AND a USERNAME (USER username)\r\n", this->_clients[i - 1]);
