@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interpretMode.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 05:36:35 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 06:49:49 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,46 @@ int	Channel::isOperator(Client &cl)
 	if (it != this->_operators.end())
 		return (1);
 	return (0);
+}
+
+void	Server::_manageOperator(Client &cl, std::string message, char action, Channel *channel)
+{
+	std::vector<std::string> splitted = split(message, ' ');
+	std::vector<Client *>::iterator it = channel->getClients().begin();
+	for (; it != channel->getClients().end(); ++it)
+	{
+		if ((*it)->getNickName() == splitted[3])
+			break ;
+	}
+	if (it == channel->getClients().end())
+	{
+		std::string messageToSend = ":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), splitted[2]);
+		send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+		return ;
+	}
+	if (!channel->isOperator(cl))
+		return ;
+	// insuffi perm
+	if (action == '-')
+	{
+		std::vector<Client *>::iterator itOp = channel->getOperators().begin();
+		for (; itOp != channel->getOperators().end(); ++itOp)
+		{
+			if ((*itOp)->getNickName() == splitted[3])
+				break ;
+		}
+		std::cout << channel->getOperators().size() << std::endl;
+		channel->getOperators().erase(itOp);
+	}
+	else if (action == '+')
+		channel->getOperators().push_back(*it);
+	it = channel->getClients().begin();
+	std::string messageToSend = getMask(cl) + message + "\r\n";
+	for (; it != channel->getClients().end(); ++it)
+	{
+		if (*it)
+			send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+	}
 }
 
 void	Server::_interpretMode(Client &cl, std::string message)
@@ -51,30 +91,11 @@ void	Server::_interpretMode(Client &cl, std::string message)
 			channel->getMode().changeTopic = (mode[i] == 't') ? (action == '+') : false;
 		if (mode[i] == 'k' && splitted.size() == 3)
 			channel->getMode().password = splitted[3];
-		if (mode[i] == 'o' && splitted.size() == 3)
-		{
-			std::vector<Client *>::iterator it = channel->getClients().begin();
-			for (; it != channel->getClients().end(); ++it)
-			{
-				if ((*it)->getNickName() == splitted[3])
-					break ;
-			}
-			if (it == channel->getClients().end())
-			{
-				std::string messageToSend = ":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), splitted[2]);
-				send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-				return ;
-			}
-			if (channel->isOperator(**it) && action == '-')
-				channel->getOperators().erase(it);
-			else if (channel->isOperator(**it) && action == '+')
-				channel->getOperators().push_back(*it);
-			it = channel->getClients().begin();
-			std::string messageToSend = getMask(cl) + message + "\r\n";
-			for (; it != channel->getClients().end(); ++it)
-				send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-		}
-		if (mode[i] == 'l')
+		if (mode[i] == 'o' && splitted.size() == 4)
+			this->_manageOperator(cl, message, action, channel);
+		if (mode[i] == 'l' && action == '+')
 			channel->getMode().userLimit = atoi(splitted[3].c_str());
+		if (mode[i] == 'l' && action == '-')
+			channel->getMode().userLimit = -1;
 	}
 }

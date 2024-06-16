@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 05:31:12 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 06:53:35 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	Server::joinChannel(Client & cl, std::string & message, int const & i)
 	Channel *channelCheck = this->_channelExists(toSet);
 	if (channelCheck)
 	{
+		if (channelCheck->getMode().userLimit > 0 && static_cast<size_t>(channelCheck->getMode().userLimit) >= channelCheck->getClients().size())
+			return ;
 		channelCheck->getClients().push_back(&cl);
 		cl.getBelongChannel().push_back(channelCheck);
 		this->refreshList(channelCheck);

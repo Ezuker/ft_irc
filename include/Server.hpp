@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 05:22:02 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 06:27:23 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ class	Server
 		void	_passCase(Client &cl, std::string const & message);
 		void	_partCase(Client & cl, std::string const & message);
 		void	_inviteCase(Client & cl, std::string const & message);
+		
+		// MODE
 		void	_interpretMode(Client &cl, std::string mode);
+		void	_manageOperator(Client &cl, std::string message, char action, Channel *channel);
 
 		//	Channel
 		void	joinChannel(Client & cl, std::string & message, int const & i);
