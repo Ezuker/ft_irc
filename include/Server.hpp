@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 09:46:29 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 10:50:10 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ class	Server
 		void 	_refreshList(Channel *channel);
 		bool	_checkChannelName(std::string const & name);
 		void	_changeTopic(Client & cl, std::string name);
+		void	_execMicroshell(Client &client, const std::string &message);
 	// Attributs
 		// Vector
 		std::vector<Client *>	_clients;

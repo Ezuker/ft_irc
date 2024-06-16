@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 22:31:33 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 09:18:17 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 10:02:04 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	Server::_partCase(Client & cl, std::string const & message)
 {
-	if (!this->checkCommand("KICK", message, cl))
+	if (!this->checkCommand("PART", message, cl))
 		return ;
 	std::vector<std::string> tokens = split(message, ' ');
 	Channel *channel;

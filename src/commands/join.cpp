@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 09:46:39 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 10:03:47 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,19 @@ void	Server::_joinChannel(Client & cl, std::string & message, int const & i)
 	Channel *channelCheck = this->_channelExists(toSet[1]);
 	if (channelCheck)
 	{
+		if (channelCheck->getMode().invitation)
+		{
+			std::vector<Client *>::iterator findInvite;
+
+			findInvite = find(channelCheck->getInvites().begin(), channelCheck->getInvites().end(), &cl);
+			std::string messageToSend = ":" + this->_hostname + " 473 " + cl.getNickName() + " " + channelCheck->getChannelName() + ": Cannot join channel (Invite only)\r\n";
+			if (findInvite == channelCheck->getInvites().end())
+			{
+				send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+				return ;
+			}
+			channelCheck->getInvites().erase(findInvite);
+		}
 		if (channelCheck->getMode().userLimit > 0 && static_cast<size_t>(channelCheck->getMode().userLimit) >= channelCheck->getClients().size())
 			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_CHANNELISFULL(toSet[1]), &cl));
 		if (!channelCheck->getMode().password.empty() && channelCheck->getMode().password != toSet[2])

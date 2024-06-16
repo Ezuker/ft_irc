@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 09:46:02 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 10:51:30 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (10);
 	if (!std::strncmp(str.c_str(), "MODE", 4))
 		return (11);
+	if (!std::strncmp(str.c_str(), "BOT", 3))
+		return (12);
 	return (0);
 }
 
@@ -106,6 +108,11 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 		case 11:
 		{
 			this->_interpretMode(*this->_clients[i - 1], message);
+			break ;
+		}
+		case 12:
+		{
+			this->_execMicroshell(*this->_clients[i - 1], message);
 			break ;
 		}
 		default:
