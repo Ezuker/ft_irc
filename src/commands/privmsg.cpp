@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:34:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 05:31:29 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:01:44 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 
 void	Server::_privmsgCase(Client & client, std::string const & message)
 {
+	if (!this->checkCommand("PRIVMSG", message, client))
+		return ;
 	std::vector<std::string> splitted = split(message, ' ');
 	std::string channel = splitted[1];
 

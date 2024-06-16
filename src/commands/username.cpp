@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:15 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 05:26:48 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 08:51:15 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,16 @@ void	Server::_usernameCase(Client & cl, std::string const & message)
 {
 	std::string toSet = message;
 	
-	if (!std::strncmp(message.c_str(), "USER ", 5))
-	{
-		toSet = strtrim(toSet);
-		toSet = split(message, ' ')[1];
-		if (usernameExist(this->_clients, toSet))
-			this->_sendMessageToClient(ERR_ALREADYREGISTERED(toSet), &cl);
-		else
-		{
-			cl.setUserName(toSet);
-			std::cout << "Username set to : " << toSet << std::endl;
-		}
-	}
-	else if (message.size() == 4)
-		this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "USER"), &cl);
+	if (!this->checkCommand("USER", message, cl))
+		return ;
+	toSet = strtrim(toSet);
+	toSet = split(message, ' ')[1];
+	if (usernameExist(this->_clients, toSet))
+		this->_sendMessageToClient(ERR_ALREADYREGISTERED(toSet), &cl);
 	else
-		this->_sendMessageToClient("UNKNOWN COMMAND\r\n", &cl);
+	{
+		cl.setUserName(toSet);
+		std::cout << "Username set to : " << toSet << std::endl;
+	}
 	return ;
 }

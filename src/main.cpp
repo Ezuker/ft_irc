@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 		Server	myServer(atoi(argv[1]), argv[2], server_sock);
 		myServer.startServer();
 	}
-	catch(const std::exception& e)
+	catch(const std::logic_error& e)
 	{
 		std::cerr << e.what() << '\n';
 	}

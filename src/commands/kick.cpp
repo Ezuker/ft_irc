@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 05:26:13 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:18:13 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	Client::_isInChannel(Channel const & channel)
 
 void	Server::_kickCase(Client & cl, std::string const & message)
 {
+	if (!this->checkCommand("KICK", message, cl))
+		return ;
 	std::vector<std::string> tokens = split(message, ' ');
 	if (tokens.size() < 3)
 		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "KICK"), &cl));

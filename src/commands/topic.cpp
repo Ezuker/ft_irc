@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 07:44:42 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 05:26:44 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:18:28 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ std::string Channel::getLastTopicChangeTime() const
 
 void	Server::_changeTopic(Client & cl, std::string message)
 {
+	if (!this->checkCommand("TOPIC", message, cl))
+		return ;
 	std::vector<std::string> tokens = split(message, ' ');
 	Channel *channel;
 
@@ -35,7 +37,7 @@ void	Server::_changeTopic(Client & cl, std::string message)
 	std::vector<Client *>::iterator toFind;
 
 	toFind = find(operatorList.begin(), operatorList.end(), &cl);
-	if (toFind != operatorList.end())
+	if (channel->getMode().changeTopic == false || toFind != operatorList.end())
 	{
 		std::vector<Client *> clientList = channel->getClients();
 		std::vector<Client *>::iterator it = clientList.begin();

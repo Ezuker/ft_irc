@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 05:26:04 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:18:06 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	Server::_inviteCase(Client & cl, std::string const & message)
 {
+	if (!this->checkCommand("INVITE", message, cl))
+		return ;
 	std::vector<std::string> splitted = split(message, ' ');
 	std::vector<Client *>::iterator findClient;
 	std::vector<Channel *>::iterator findChannel;
@@ -35,5 +37,7 @@ void	Server::_inviteCase(Client & cl, std::string const & message)
 	send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 	messageToSend = getMask(cl) + message + "\r\n";
 	send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+	if (find(toSend->getInvites().begin(), toSend->getInvites().end(), &cl) != toSend->getInvites().end())
+		toSend->getInvites().push_back(&cl);
 }
  

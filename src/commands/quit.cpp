@@ -6,14 +6,15 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 22:14:02 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 23:37:34 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:13:30 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-void	Server::_removeClient(unsigned int &index)
+void	Server::_removeClient(unsigned int &index, std::string message)
 {
+	this->_sendMessageToClient(message, this->_clients[index - 1]);
 	std::cerr << "Error: recv() failed or client disconnected" << std::endl;
 	close(this->_fds[index].fd);
 	this->_fds.erase(this->_fds.begin() + index);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 06:27:23 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:13:45 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class	Server
 		// HANDLE CLIENT
         int     _handleMessage(unsigned int &i);
         int     _addClient();
-        void	_removeClient(unsigned int &index);
+        void	_removeClient(unsigned int &index, std::string message);
         void    _checkPassword(Client &cl, std::string message);
         void    _checkMessage(std::string, unsigned int &i);
 		void	_sendMessageToClient(const std::string & message, Client *client);
@@ -45,10 +45,11 @@ class	Server
 		void	_passCase(Client &cl, std::string const & message);
 		void	_partCase(Client & cl, std::string const & message);
 		void	_inviteCase(Client & cl, std::string const & message);
+		bool	checkCommand(std::string commandName, std::string message, Client &cl);
 		
 		// MODE
 		void	_interpretMode(Client &cl, std::string mode);
-		void	_manageOperator(Client &cl, std::string message, char action, Channel *channel);
+		void	_manageOperator(Client &cl, std::vector<std::string> splitted, char action, Channel *channel);
 
 		//	Channel
 		void	joinChannel(Client & cl, std::string & message, int const & i);

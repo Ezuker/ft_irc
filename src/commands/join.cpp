@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 06:53:35 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/16 08:56:51 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,26 @@
 
 void	Server::joinChannel(Client & cl, std::string & message, int const & i)
 {
-	std::string toSet;
+	std::vector<std::string> toSet;
 
-	if (std::strncmp(message.c_str(), "JOIN ", 5))
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "JOIN"), &cl));
-	toSet = message.substr(5, message.size() - 5);
-	if (toSet.empty())
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "JOIN"), &cl));
-	if (toSet[0] != '#')
+	if (!this->checkCommand("JOIN", message, cl))
+		return ;
+	toSet = split(message, ' ');
+	if (toSet[1][0] != '#')
 		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_BADCHANMASK(cl.getNickName()), &cl));
-	Channel *channelCheck = this->_channelExists(toSet);
+	Channel *channelCheck = this->_channelExists(toSet[1]);
 	if (channelCheck)
 	{
 		if (channelCheck->getMode().userLimit > 0 && static_cast<size_t>(channelCheck->getMode().userLimit) >= channelCheck->getClients().size())
-			return ;
+			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_CHANNELISFULL(toSet[1]), &cl));
+		if (!channelCheck->getMode().password.empty() && channelCheck->getMode().password != toSet[2])
+			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_BADCHANNELKEY(toSet[1]), &cl));
 		channelCheck->getClients().push_back(&cl);
 		cl.getBelongChannel().push_back(channelCheck);
 		this->refreshList(channelCheck);
 	}
 	else
-		this->_createChannel(toSet, i);
+		this->_createChannel(toSet[1], i);
 	return ;
 }
 

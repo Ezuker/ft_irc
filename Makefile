@@ -29,6 +29,7 @@ SRC = \
 	src/utils/split.cpp \
 	src/utils/getMask.cpp \
 	src/utils/isValidName.cpp \
+	src/utils/checkCommand.cpp \
 	src/server/init.cpp \
 	src/server/manageClient.cpp \
 	src/server/startServer.cpp \

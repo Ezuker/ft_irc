@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interpretMode.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 06:49:49 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:33:53 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,8 @@ int	Channel::isOperator(Client &cl)
 	return (0);
 }
 
-void	Server::_manageOperator(Client &cl, std::string message, char action, Channel *channel)
+void	Server::_manageOperator(Client &cl, std::vector<std::string> splitted, char action, Channel *channel)
 {
-	std::vector<std::string> splitted = split(message, ' ');
 	std::vector<Client *>::iterator it = channel->getClients().begin();
 	for (; it != channel->getClients().end(); ++it)
 	{
@@ -33,7 +32,7 @@ void	Server::_manageOperator(Client &cl, std::string message, char action, Chann
 	}
 	if (it == channel->getClients().end())
 	{
-		std::string messageToSend = ":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), splitted[2]);
+		std::string messageToSend = ":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), channel->getChannelName());
 		send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 		return ;
 	}
@@ -48,22 +47,25 @@ void	Server::_manageOperator(Client &cl, std::string message, char action, Chann
 			if ((*itOp)->getNickName() == splitted[3])
 				break ;
 		}
-		std::cout << channel->getOperators().size() << std::endl;
-		channel->getOperators().erase(itOp);
+		if (itOp != channel->getOperators().end())
+			channel->getOperators().erase(itOp);
 	}
 	else if (action == '+')
 		channel->getOperators().push_back(*it);
-	it = channel->getClients().begin();
-	std::string messageToSend = getMask(cl) + message + "\r\n";
-	for (; it != channel->getClients().end(); ++it)
-	{
-		if (*it)
-			send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-	}
+}
+
+void	Channel::sendMessageToClient(std::string const & messageToSend)
+{
+	std::vector<Client *>::iterator it = this->_clients.begin();
+
+	for (; it != this->_clients.end(); ++it)
+		send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 }
 
 void	Server::_interpretMode(Client &cl, std::string message)
 {
+	if (!this->checkCommand("MODE", message, cl))
+		return ;
 	std::vector<std::string> splitted = split(message, ' ');
 	std::string	mode;
 	Channel *channel;
@@ -86,16 +88,72 @@ void	Server::_interpretMode(Client &cl, std::string message)
 	for (size_t i = 0; i < mode.size(); i++)
 	{
 		if (mode[i] == 'i')
+		{
 			channel->getMode().invitation = (mode[i] == 'i') ? (action == '+') : false;
+			if (action == '+')
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +i" + "\r\n");
+			else
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -i" + "\r\n");
+		}
 		if (mode[i] == 't')
+		{
 			channel->getMode().changeTopic = (mode[i] == 't') ? (action == '+') : false;
-		if (mode[i] == 'k' && splitted.size() == 3)
-			channel->getMode().password = splitted[3];
-		if (mode[i] == 'o' && splitted.size() == 4)
-			this->_manageOperator(cl, message, action, channel);
-		if (mode[i] == 'l' && action == '+')
-			channel->getMode().userLimit = atoi(splitted[3].c_str());
-		if (mode[i] == 'l' && action == '-')
-			channel->getMode().userLimit = -1;
+			if (action == '+')
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +t" + "\r\n");
+			else
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -t" + "\r\n");
+		}
+		if (mode[i] == 'k')
+		{
+			if (action == '+')
+			{
+				if (splitted.size() < 4)
+				{
+					this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"), &cl);
+					continue;
+				}
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +k " + splitted[3] + "\r\n");
+				channel->getMode().password = splitted[3];
+			}
+			else
+			{
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -k " + splitted[3] + "\r\n");
+				channel->getMode().password = "";
+			}
+			splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
+		}
+		if (mode[i] == 'o')
+		{
+			if (splitted.size() < 4)
+			{
+				this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"), &cl);
+				continue;
+			}
+			this->_manageOperator(cl, splitted, action, channel);
+			if (action == '+')
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +o " + splitted[3] + "\r\n");
+			else
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -o " + splitted[3] + "\r\n");
+			splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
+		}
+		if (mode[i] == 'l')
+		{
+			if (action == '+')
+			{
+				if (splitted.size() < 4)
+				{
+					this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"), &cl);
+					continue;
+				}
+				channel->getMode().userLimit = atoi(splitted[3].c_str());
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +l " + splitted[3] + "\r\n");
+			}
+			else
+			{
+				channel->getMode().userLimit = -1;
+				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -l " + splitted[3] + "\r\n");
+			}
+			splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
+		}
 	}
 }

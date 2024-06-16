@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 05:27:42 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 09:16:40 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (1);
 	if (cl->getNickName().empty())
 		return (0);
-	if (!std::strncmp(str.c_str(), "USER ", 5))
+	if (!std::strncmp(str.c_str(), "USER", 4))
 		return (2);
 	if (cl->getUserName().empty())
 		return (0);
@@ -26,19 +26,19 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (3);	
 	if (!std::strncmp(str.c_str(), "PASS", 4))
 		return (4);
-	if (!std::strncmp(str.c_str(), "PRIVMSG ", 8))
+	if (!std::strncmp(str.c_str(), "PRIVMSG", 7))
 		return (5);
-	if (!std::strncmp(str.c_str(), "KICK ", 5))
+	if (!std::strncmp(str.c_str(), "KICK", 4))
 		return (6);
-	if (!std::strncmp(str.c_str(), "TOPIC ", 6))
+	if (!std::strncmp(str.c_str(), "TOPIC", 5))
 		return (7);
-	if (!std::strncmp(str.c_str(), "PART ", 5))
+	if (!std::strncmp(str.c_str(), "PART", 4))
 		return (8);
 	if (!std::strncmp(str.c_str(), "QUIT", 4))
 		return (9);
-	if (!std::strncmp(str.c_str(), "INVITE ", 7))
+	if (!std::strncmp(str.c_str(), "INVITE", 6))
 		return (10);
-	if (!std::strncmp(str.c_str(), "MODE ", 5))
+	if (!std::strncmp(str.c_str(), "MODE", 4))
 		return (11);
 	return (0);
 }
@@ -95,7 +95,7 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 		}
 		case 9:
 		{
-			this->_removeClient(i);
+			this->_removeClient(i, message);
 			break ;
 		}
 		case 10:
@@ -133,7 +133,7 @@ int	Server::_handleMessage(unsigned int &i)
 	int bytes_received = recv(this->_fds[i].fd, buffer, MAX_BUFFER_SIZE, 0);
 	if (bytes_received <= 0)
 	{
-		this->_removeClient(i);
+		this->_removeClient(i, "QUIT");
 		return (0);
 	}
 	if (bytes_received > 0 && i > 0)

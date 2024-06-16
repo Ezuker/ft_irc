@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 04:02:12 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 08:15:09 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,15 @@
 # define ERR_CHANOPRIVSNEEDED(n, c) "482 " + n + " " + c + " :No such permission\r\n"
 # define ERR_NOTONCHANNEL(n, c) "442 " + n + " " + c + " :Not on channel\r\n"
 # define ERR_BADCHANMASK(n) "476 " + n + " :The specified channel name is invalid.\r\n"
-
+# define ERR_CHANNELISFULL(c) "471 " + c + " :Cannot join channel (+l)\r\n"
+# define ERR_INVITEONLYCHAN(c) "473 " + c + " :Cannot join channel (+i)\r\n"
+# define ERR_BADCHANNELKEY(c) "475 " + c + " :Cannot join channel (+k)\r\n"
 //GLOBAL
 # define ERR_NEEDMOREPARAMS(n, c) "461 " + n + " " + c + " : Need more params\r\n"
 # define ERR_ALREADYREGISTERED(c) "462 " + c + " : You are already registered\r\n"
 
+//INVITE
+# define ERR_USERONCHANNEL(n, c) "443 " + n + " " + c + " :is already on channel\r\n"
 /*                                                                            */
 
 // readEvent
