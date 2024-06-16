@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 02:56:26 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 06:41:37 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 03:34:55 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	Server::_passCase(Client &cl, const std::string &message)
 {
 	if (cl.getAccess())
-		this->_sendMessageToClient(ERR_ALREADYREGISTERED, &cl);
+		this->_sendMessageToClient(ERR_ALREADYREGISTERED(cl.getNickName()), &cl);
 	else 
 		this->_checkPassword(cl, message);
 }

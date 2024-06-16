@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 00:39:39 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 03:05:01 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 		toSet = message.substr(5, message.size() - 5);
 		if (nicknameExist(this->_clients, toSet))
 			this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NICKNAMEINUSE(cl.getNickName()), &cl);
-		else
+		else if (isValidName(toSet))
 		{
 			//:ehalliez_!ehalliezUse@Pony-q988mu.20.unyc.it NICK Salut
 			std::string messageToSend = getMask(cl) + message + "\n";
@@ -39,6 +39,8 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 			cl.setNickName(toSet);
 			std::cout << "Nickname set to : " << toSet << std::endl;
 		}
+		else
+			this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_ERRONEUSNICKNAME(cl.getNickName()), &cl);
 	}
 	else if (message.size() == 4)
 		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NONICKNAMEGIVEN(cl.getNickName()), &cl);

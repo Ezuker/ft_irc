@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 01:02:28 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 03:32:12 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ int	Server::_createChannel(std::string name, int i)
 	
 	if (!this->_checkChannelName(name))
 	{
-		// erreur
+		std::string errMessage = ":" + this->_clients[i - 1]->getHostName() + " " + ERR_BADCHANMASK(name);
+		this->_sendMessageToClient(message, this->_clients[i - 1]);
+		return 0;
 	}
 	Channel *newChannel = new Channel(name, this->_clients[i - 1]);
 	newChannel->getMode().userLimit = -1;

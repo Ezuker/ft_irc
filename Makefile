@@ -28,6 +28,7 @@ SRC = \
 	src/utils/strtrim.cpp \
 	src/utils/split.cpp \
 	src/utils/getMask.cpp \
+	src/utils/isValidName.cpp \
 	src/server/init.cpp \
 	src/server/manageClient.cpp \
 	src/server/startServer.cpp \
