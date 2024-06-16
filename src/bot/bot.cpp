@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 11:11:48 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 11:17:44 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void Server::_execMicroshell(Client &client, const std::string &message)
     std::string command = message.substr(10); // Supposez que "MICROSHELL " fait 10 caractères
     const char *microshellPath = "./command";
     const char *apiUrl = "https://api.openai.com/v1/completions";
-    const char *apiKey = "sk-proj-n3oKmogTZ486PKrkw6ZeT3BlbkFJm1GvcPz50jzXPEYSRs9C";
 
     // Construire la commande pour `curl` avec l'API de complétion de OpenAI
     std::stringstream ss;
