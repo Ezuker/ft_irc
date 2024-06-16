@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:32:46 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 00:11:59 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 05:21:40 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ class Channel
 		std::string 			getClientList(void);
 		std::string 			getOperatorList(void);
 		std::string 			getLastTopicChangeTime(void) const;
-
+		int						isOperator(Client &cl);
 
 	private:
 		

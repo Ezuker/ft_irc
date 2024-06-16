@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:15 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 03:33:58 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 05:26:48 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ void	Server::_usernameCase(Client & cl, std::string const & message)
 		}
 	}
 	else if (message.size() == 4)
-		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "USER"), &cl);
+		this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "USER"), &cl);
 	else
-		this->_sendMessageToClient("UNKNOWN COMMAND\n", &cl);
+		this->_sendMessageToClient("UNKNOWN COMMAND\r\n", &cl);
 	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 07:44:42 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 00:47:13 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 05:26:44 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ void	Server::_changeTopic(Client & cl, std::string message)
 
 	channel = this->_channelExists(tokens[1]);
 	if (!channel)
-		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1]), &cl));
+		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1]), &cl));
 	if (!cl._isInChannel(*channel))
-		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
+		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
 	std::vector<Client *> operatorList = channel->getOperators();
 	std::vector<Client *>::iterator toFind;
 
@@ -42,14 +42,14 @@ void	Server::_changeTopic(Client & cl, std::string message)
 		if (tokens.size() == 2)
 		{
 			if (channel && channel->getTopic().empty())
-				return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_RPL_NOTOPIC(cl.getNickName(), channel->getChannelName()), &cl));
+				return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_RPL_NOTOPIC(cl.getNickName(), channel->getChannelName()), &cl));
 			if (channel)
 			{
 				channel->setIsTopic(!channel->getIsTopic());
 				if (channel->getLastChange().size())
 				{
-					std::string messageToSend = ":" + cl.getHostName() + " 332 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getTopic() + "\n";
-					messageToSend += ":" + cl.getHostName() + " 333 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getLastChange() + channel->getLastTopicChangeTime() + "\n";
+					std::string messageToSend = ":" + this->_hostname + " 332 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getTopic() + "\r\n";
+					messageToSend += ":" + this->_hostname + " 333 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getLastChange() + channel->getLastTopicChangeTime() + "\r\n";
 					channel->setIsTopic(true);
 					for (; it != clientList.end(); ++it)
 						send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);	
@@ -59,7 +59,7 @@ void	Server::_changeTopic(Client & cl, std::string message)
 		}
 		else
 		{
-			std::string messageToSend = getMask(cl) + message + "\n";
+			std::string messageToSend = getMask(cl) + message + "\r\n";
 			channel->setIsTopic(true);
 			if (tokens.size() > 2)
 				channel->setTopic(tokens[2]);
@@ -69,6 +69,6 @@ void	Server::_changeTopic(Client & cl, std::string message)
 		}
 	}
 	else
-		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()), &cl);
+		this->_sendMessageToClient(":" + this->_hostname + " " + ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()), &cl);
 	
 }

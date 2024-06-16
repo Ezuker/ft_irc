@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/15 23:39:18 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 05:22:02 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,11 @@ class	Server
 		void	_kickCase(Client & cl, std::string const & message);
 		void	_passCase(Client &cl, std::string const & message);
 		void	_partCase(Client & cl, std::string const & message);
+		void	_inviteCase(Client & cl, std::string const & message);
+		void	_interpretMode(Client &cl, std::string mode);
 
 		//	Channel
-		void	joinChannel(Client & cl, std::string const & message, int const & i);
+		void	joinChannel(Client & cl, std::string & message, int const & i);
 		Channel	* _channelExists(std::string channel);
 		int		_createChannel(std::string channel, int i);
 		void 	refreshList(Channel *channel);
@@ -61,4 +63,5 @@ class	Server
 		unsigned short			_port;
 		std::string				_password;
 		int                     _fdSocketServ;
+		const std::string		_hostname;
 };

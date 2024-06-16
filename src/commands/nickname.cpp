@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 03:05:01 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 05:23:48 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,20 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 	{
 		toSet = message.substr(5, message.size() - 5);
 		if (nicknameExist(this->_clients, toSet))
-			this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NICKNAMEINUSE(cl.getNickName()), &cl);
+			this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NICKNAMEINUSE(cl.getNickName()), &cl);
 		else if (isValidName(toSet))
 		{
-			//:ehalliez_!ehalliezUse@Pony-q988mu.20.unyc.it NICK Salut
-			std::string messageToSend = getMask(cl) + message + "\n";
+			std::string messageToSend = getMask(cl) + message + "\r\n";
 			send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 			cl.setNickName(toSet);
 			std::cout << "Nickname set to : " << toSet << std::endl;
 		}
 		else
-			this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_ERRONEUSNICKNAME(cl.getNickName()), &cl);
+			this->_sendMessageToClient(":" + this->_hostname + " " + ERR_ERRONEUSNICKNAME(cl.getNickName()), &cl);
 	}
 	else if (message.size() == 4)
-		this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NONICKNAMEGIVEN(cl.getNickName()), &cl);
+		this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NONICKNAMEGIVEN(cl.getNickName()), &cl);
 	else
-		this->_sendMessageToClient("UNKNOWN COMMAND\n", &cl);
+		this->_sendMessageToClient("UNKNOWN COMMAND\r\n", &cl);
 	return ;
 }

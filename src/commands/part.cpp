@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 22:31:33 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 00:47:58 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 05:26:18 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ void	Server::_partCase(Client & cl, std::string const & message)
 		return ;
 	channel = this->_channelExists(tokens[1]);
 	if (!channel)
-		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1]), &cl));
+		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1]), &cl));
 	if (!cl._isInChannel(*channel))
-		return (this->_sendMessageToClient(":" + cl.getHostName() + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
+		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
 	std::vector<Client *> clients = channel->getClients();
 	std::vector<Client *>::iterator it = clients.begin();
-	std::string messageToSend = getMask(cl) + message + "\n";
+	std::string messageToSend = getMask(cl) + message + "\r\n";
 	for (; it != clients.end(); ++it)
 	{
 		send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);	

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:34:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 03:30:02 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 05:31:29 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,21 @@ void	Server::_privmsgCase(Client & client, std::string const & message)
 	if (channel.size() && channel[0] == '#')
 	{
 		if (!toSend)
-			return (this->_sendMessageToClient(":" + client.getHostName() + " " + ERR_NOSUCHCHANNEL(client.getNickName(), channel), &client));
+			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(client.getNickName(), channel), &client));
 		if (!client._isInChannel(*toSend))
-			return (this->_sendMessageToClient(":" + client.getHostName() + " " + ERR_NOTONCHANNEL(client.getNickName(), toSend->getChannelName()), &client));
+			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOTONCHANNEL(client.getNickName(), toSend->getChannelName()), &client));
 	}
 	else
 	{
 		std::vector<Client *>::iterator it= this->_clients.begin();
 		for (; it != this->_clients.end(); ++it)
 		{
-			std::cout << (*it)->getNickName() << " " << channel << std::endl;
 			if ((*it)->getNickName() == channel)
 				break ;
 		}
 		if (it == this->_clients.end())
-			return (this->_sendMessageToClient(":" + client.getHostName() + " " + ERR_NOSUCHCHANNEL(client.getNickName(), channel), &client));
-		std::string messageToSend = getMask(client) + message + "\n";
+			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(client.getNickName(), channel), &client));
+		std::string messageToSend = getMask(client) + message + "\r\n";
 		send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 		return ;
 	}
@@ -49,7 +48,7 @@ void	Server::_privmsgCase(Client & client, std::string const & message)
 	{
 		if (*it == &client)
 			continue ;
-		messageToSend += getMask(client) + message  + "\n";
+		messageToSend += getMask(client) + message  + "\r\n";
 		send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 		messageToSend = ":";
 	}

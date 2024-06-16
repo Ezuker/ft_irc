@@ -36,6 +36,7 @@ SRC = \
 	src/server/handleMessage.cpp \
 	src/server/handleChannel.cpp \
 	src/channel/getMask.cpp \
+	src/channel/interpretMode.cpp \
 	src/commands/nickname.cpp \
 	src/commands/username.cpp \
 	src/commands/join.cpp \
@@ -45,6 +46,7 @@ SRC = \
 	src/commands/topic.cpp \
 	src/commands/part.cpp \
 	src/commands/quit.cpp \
+	src/commands/invite.cpp \
 
 INCLUDES = \
 	-I ./include/ \

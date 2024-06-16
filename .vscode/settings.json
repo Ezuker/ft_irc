@@ -54,6 +54,9 @@
 		"span": "cpp",
 		"sstream": "cpp",
 		"cinttypes": "cpp",
-		"ctime": "cpp"
+		"ctime": "cpp",
+		"bitset": "cpp",
+		"map": "cpp",
+		"regex": "cpp"
 	}
 }

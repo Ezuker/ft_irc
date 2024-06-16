@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/15 23:39:20 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/16 05:27:42 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (2);
 	if (cl->getUserName().empty())
 		return (0);
-	if (!std::strncmp(str.c_str(), "JOIN ", 5))
+	if (!std::strncmp(str.c_str(), "JOIN", 4))
 		return (3);	
 	if (!std::strncmp(str.c_str(), "PASS", 4))
 		return (4);
@@ -36,6 +36,10 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (8);
 	if (!std::strncmp(str.c_str(), "QUIT", 4))
 		return (9);
+	if (!std::strncmp(str.c_str(), "INVITE ", 7))
+		return (10);
+	if (!std::strncmp(str.c_str(), "MODE ", 5))
+		return (11);
 	return (0);
 }
 
@@ -94,20 +98,30 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 			this->_removeClient(i);
 			break ;
 		}
+		case 10:
+		{
+			this->_inviteCase(*this->_clients[i - 1], message);
+			break ;
+		}
+		case 11:
+		{
+			this->_interpretMode(*this->_clients[i - 1], message);
+			break ;
+		}
 		default:
 		{
 			if (this->_clients[i - 1]->getNickName().empty())
 			{
-				this->_sendMessageToClient("451 : Please register a NICKNAME (NICK nickname) AND a USERNAME (USER username)\n", this->_clients[i - 1]);
+				this->_sendMessageToClient("451 : Please register a NICKNAME (NICK nickname) AND a USERNAME (USER username)\r\n", this->_clients[i - 1]);
 				break ;
 			}
 			else if (this->_clients[i - 1]->getUserName().empty())
 			{
-				this->_sendMessageToClient("451 : Please register a USERNAME (USER username)\n", this->_clients[i - 1]);
+				this->_sendMessageToClient("451 : Please register a USERNAME (USER username)\r\n", this->_clients[i - 1]);
 				break ;
 			}
 			else
-				this->_sendMessageToClient("Unknown command\n", this->_clients[i - 1]);
+				this->_sendMessageToClient("Unknown command\r\n", this->_clients[i - 1]);
 		}
 	}
 }
