@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 09:18:13 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:11:43 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,16 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 		return ;
 	std::vector<std::string> tokens = split(message, ' ');
 	if (tokens.size() < 3)
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "KICK"), &cl));
+		return (this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "KICK")));
 	std::string channelName = tokens[1];
 	std::string userToKick = tokens[2];
 	if (!this->_checkChannelName(channelName))
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_BADCHANMASK(cl.getNickName()), &cl));
+		return (this->sendErrToClient(cl, ERR_BADCHANMASK(cl.getNickName())));
 	Channel *channel = this->_channelExists(channelName);
 	if (!channel)
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), channelName), &cl));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), channelName)));
 	if (!cl._isInChannel(*channel))
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
+		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName())));
 	std::vector<Client *> operatorList = channel->getOperators();
 	std::vector<Client *>::iterator toFind;
 
@@ -79,5 +79,5 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 		}
 	}
 	else
-		this->_sendMessageToClient(":" + this->_hostname + " " + ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()), &cl);
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()));
 }

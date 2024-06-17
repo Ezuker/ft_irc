@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 22:31:33 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 10:02:04 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:12:41 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	Server::_partCase(Client & cl, std::string const & message)
 		return ;
 	channel = this->_channelExists(tokens[1]);
 	if (!channel)
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1]), &cl));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1])));
 	if (!cl._isInChannel(*channel))
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
+		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName())));
 	std::vector<Client *> clients = channel->getClients();
 	std::vector<Client *>::iterator it = clients.begin();
 	std::string messageToSend = getMask(cl) + message + "\r\n";

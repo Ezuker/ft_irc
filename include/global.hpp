@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 08:15:09 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 10:42:36 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@
 # define MAX_BUFFER_SIZE 1024
 
 /*                                   ERRORS                                   */
+//GLOBAL
+# define ERR_NEEDMOREPARAMS(n, c) "461 " + n + " " + c + " : Need more params\r\n"
+# define ERR_ALREADYREGISTERED(c) "462 " + c + " : You are already registered\r\n"
+# define ERR_UNKNOWNCOMMAND(c) "421 " + c + " :Unknown command\r\n"
+
 //PASS
 # define ERR_PASSWDMISMATCH(n) "464 " + n + " :Passwod Dismatch\r\n"
 # define ERROR_PW "Error (464): please enter the password 'PASS (PASSWORD)'\r\n"
@@ -37,9 +42,6 @@
 # define ERR_CHANNELISFULL(c) "471 " + c + " :Cannot join channel (+l)\r\n"
 # define ERR_INVITEONLYCHAN(c) "473 " + c + " :Cannot join channel (+i)\r\n"
 # define ERR_BADCHANNELKEY(c) "475 " + c + " :Cannot join channel (+k)\r\n"
-//GLOBAL
-# define ERR_NEEDMOREPARAMS(n, c) "461 " + n + " " + c + " : Need more params\r\n"
-# define ERR_ALREADYREGISTERED(c) "462 " + c + " : You are already registered\r\n"
 
 //INVITE
 # define ERR_USERONCHANNEL(n, c) "443 " + n + " " + c + " :is already on channel\r\n"

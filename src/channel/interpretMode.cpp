@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 09:33:53 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:21:55 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ void	Server::_manageOperator(Client &cl, std::vector<std::string> splitted, char
 	}
 	if (it == channel->getClients().end())
 	{
-		std::string messageToSend = ":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), channel->getChannelName());
-		send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+		this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), channel->getChannelName()));
 		return ;
 	}
 	if (!channel->isOperator(cl))
@@ -75,9 +74,9 @@ void	Server::_interpretMode(Client &cl, std::string message)
 	mode = splitted[2];
 	channel = this->_channelExists(splitted[1]);
 	if (!channel)
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), channel->getChannelName())));
 	if (!cl._isInChannel(*channel))
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
+		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName())));
 	if (mode[0] == '-' || mode[0] == '+')
 	{
 		action = mode[0];
@@ -109,7 +108,7 @@ void	Server::_interpretMode(Client &cl, std::string message)
 			{
 				if (splitted.size() < 4)
 				{
-					this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"), &cl);
+					this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
 					continue;
 				}
 				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +k " + splitted[3] + "\r\n");
@@ -126,7 +125,7 @@ void	Server::_interpretMode(Client &cl, std::string message)
 		{
 			if (splitted.size() < 4)
 			{
-				this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"), &cl);
+				this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
 				continue;
 			}
 			this->_manageOperator(cl, splitted, action, channel);
@@ -142,7 +141,7 @@ void	Server::_interpretMode(Client &cl, std::string message)
 			{
 				if (splitted.size() < 4)
 				{
-					this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"), &cl);
+					this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
 					continue;
 				}
 				channel->getMode().userLimit = atoi(splitted[3].c_str());

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 07:44:42 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 09:18:28 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:16:13 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void	Server::_changeTopic(Client & cl, std::string message)
 
 	channel = this->_channelExists(tokens[1]);
 	if (!channel)
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1]), &cl));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1])));
 	if (!cl._isInChannel(*channel))
-		return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName()), &cl));
+		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName())));
 	std::vector<Client *> operatorList = channel->getOperators();
 	std::vector<Client *>::iterator toFind;
 
@@ -44,7 +44,7 @@ void	Server::_changeTopic(Client & cl, std::string message)
 		if (tokens.size() == 2)
 		{
 			if (channel && channel->getTopic().empty())
-				return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_RPL_NOTOPIC(cl.getNickName(), channel->getChannelName()), &cl));
+				return (this->sendErrToClient(cl, ERR_RPL_NOTOPIC(cl.getNickName(), channel->getChannelName())));
 			if (channel)
 			{
 				channel->setIsTopic(!channel->getIsTopic());
@@ -71,6 +71,6 @@ void	Server::_changeTopic(Client & cl, std::string message)
 		}
 	}
 	else
-		this->_sendMessageToClient(":" + this->_hostname + " " + ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()), &cl);
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()));
 	
 }

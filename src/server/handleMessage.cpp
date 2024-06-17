@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 10:51:30 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:19:13 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 		}
 		case 3: // JOIN	
 		{
-			this->_joinChannel(*this->_clients[i - 1], message, i);
+			this->_joinChannel(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 4: //PASS
@@ -129,7 +129,7 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 				break ;
 			}
 			else
-				this->_sendMessageToClient("Unknown command\r\n", this->_clients[i - 1]);
+				this->sendErrToClient(*this->_clients[i - 1], ERR_UNKNOWNCOMMAND(message));
 		}
 	}
 }

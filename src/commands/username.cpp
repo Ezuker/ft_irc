@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:15 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 08:51:15 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:16:44 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	Server::_usernameCase(Client & cl, std::string const & message)
 	toSet = strtrim(toSet);
 	toSet = split(message, ' ')[1];
 	if (usernameExist(this->_clients, toSet))
-		this->_sendMessageToClient(ERR_ALREADYREGISTERED(toSet), &cl);
+		this->sendErrToClient(cl, ERR_ALREADYREGISTERED(toSet));
 	else
 	{
 		cl.setUserName(toSet);

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:34:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 09:01:44 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:15:07 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ void	Server::_privmsgCase(Client & client, std::string const & message)
 	if (channel.size() && channel[0] == '#')
 	{
 		if (!toSend)
-			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(client.getNickName(), channel), &client));
+			return (this->sendErrToClient(client, ERR_NOSUCHCHANNEL(client.getNickName(), channel)));
 		if (!client._isInChannel(*toSend))
-			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOTONCHANNEL(client.getNickName(), toSend->getChannelName()), &client));
+			return (this->sendErrToClient(client, ERR_NOTONCHANNEL(client.getNickName(), toSend->getChannelName())));
 	}
 	else
 	{
@@ -39,7 +39,7 @@ void	Server::_privmsgCase(Client & client, std::string const & message)
 				break ;
 		}
 		if (it == this->_clients.end())
-			return (this->_sendMessageToClient(":" + this->_hostname + " " + ERR_NOSUCHCHANNEL(client.getNickName(), channel), &client));
+			return (this->sendErrToClient(client, ERR_NOSUCHCHANNEL(client.getNickName(), channel)));
 		std::string messageToSend = getMask(client) + message + "\r\n";
 		send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 		return ;

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 10:50:10 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:04:34 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ class	Server
 	public:
 		Server(unsigned short port, std::string password, int fdSocketServ);
 		~Server();
-        int     startServer();
+		void	sendErrToClient(Client &cl, std::string err);
+        int		startServer();
 		
 	private:
 	// Function
@@ -52,9 +53,9 @@ class	Server
 		void	_manageOperator(Client &cl, std::vector<std::string> splitted, char action, Channel *channel);
 
 		//	Channel
-		void	_joinChannel(Client & cl, std::string & message, int const & i);
+		void	_joinChannel(Client & cl, std::string & message);
 		Channel	* _channelExists(std::string channel);
-		int		_createChannel(std::string channel, int i);
+		int		_createChannel(Client & cl, std::string name);
 		void 	_refreshList(Channel *channel);
 		bool	_checkChannelName(std::string const & name);
 		void	_changeTopic(Client & cl, std::string name);
