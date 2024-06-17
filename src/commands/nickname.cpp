@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 11:12:11 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:40:12 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 {
 	std::string toSet = message;
 	
+	if ("NICK" == message)
+		return (this->sendErrToClient(cl, ERR_NONICKNAMEGIVEN));
 	if (!this->checkCommand("NICK", message, cl))
 		return ;
 	toSet = message.substr(5, message.size() - 5);
@@ -38,7 +40,9 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 		cl.setNickName(toSet);
 		std::cout << "Nickname set to : " << toSet << std::endl;
 	}
+	else if (!toSet.size())
+		this->sendErrToClient(cl, ERR_NONICKNAMEGIVEN);
 	else
-		this->sendErrToClient(cl, ERR_ERRONEUSNICKNAME(cl.getNickName()));
+		this->sendErrToClient(cl, ERR_ERRONEUSNICKNAME(toSet));
 	return ;
 }

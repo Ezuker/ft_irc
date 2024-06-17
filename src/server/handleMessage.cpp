@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 11:19:13 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:42:19 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 			
 			if (this->_clients[i - 1]->getNickName().empty())
 			{
-				this->_sendMessageToClient("451 : Please register a NICKNAME (NICK nickname) AND a USERNAME (USER username)\r\n", this->_clients[i - 1]);
+				this->_sendMessageToClient("451 : Please register a NICKNAME (NICK nickname) first\r\n", this->_clients[i - 1]);
 				break ;
 			}
 			else if (this->_clients[i - 1]->getUserName().empty())

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 02:56:26 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 11:19:34 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:29:41 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	Server::_checkPassword(Client &cl, std::string message)
 		else if (p_try == this->_password)
 			cl.setAccess(true);
 		else
-			this->sendErrToClient(cl, ERR_PASSWDMISMATCH(cl.getNickName()));
+			this->sendErrToClient(cl, ERR_PASSWDMISMATCH);
 	}
 	else
 		this->sendErrToClient(cl, ERROR_PW);
