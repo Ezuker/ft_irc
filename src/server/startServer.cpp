@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   startServer.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:58:23 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 22:14:05 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/18 14:13:31 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@ int     Server::startServer()
 {
 	if (!this->_initServer())
 		return (0);
+    std::stringstream ss;
+	ss << "\033[1;96mServer is listening on port " << this->_port << "...\033[0m";
+	printServer(ss.str());
 	while (true)
 	{
 		int poll_count = poll(this->_fds.data(), this->_fds.size(), -1);

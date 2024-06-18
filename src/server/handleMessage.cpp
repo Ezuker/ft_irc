@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 23:57:36 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/18 14:06:11 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ int	Server::_getCommand(std::string str, Client *cl)
 		return (10);
 	if (!std::strncmp(str.c_str(), "MODE", 4))
 		return (11);
-	if (!std::strncmp(str.c_str(), "BOT", 3))
-		return (12);
 	return (0);
 }
 
@@ -118,12 +116,6 @@ void	Server::_checkMessage(std::string message, unsigned int &i)
 		{
 			this->_interpretMode(*this->_clients[i - 1], message);
 			printServer("\033[1;95mCommand MODE triggered ");
-			break ;
-		}
-		case 12:
-		{
-			printServer("\033[1;95mCommand BOT triggered ");
-			this->_execMicroshell(*this->_clients[i - 1], message);
 			break ;
 		}
 		default:

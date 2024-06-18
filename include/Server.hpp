@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 23:57:59 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/18 16:54:45 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ class	Server
 		void	_joinChannel(Client & cl, std::string & message);
 		Channel	* _channelExists(std::string channel);
 		int		_createChannel(Client & cl, std::string name);
-		void 	_refreshList(Channel *channel);
+		void 	_refreshList(Channel *channel, Client & cl);
 		bool	_checkChannelName(std::string const & name);
 		void	_changeTopic(Client & cl, std::string name);
 		void	_execMicroshell(Client &client, const std::string &message);

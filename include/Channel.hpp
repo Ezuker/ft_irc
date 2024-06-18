@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:32:46 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 15:21:49 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/18 16:28:53 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ struct mode
 	bool		changeTopic;
 	std::string password;
 	int			userLimit;
+	std::string all;
 };
 
 class Client;
@@ -30,6 +31,7 @@ class Channel
 		Channel(std::string name, Client* op) : _channelName(name) {
 			_clients.push_back(op);
 			_operators.push_back(op);
+			_CreationDate = time(0);
 		};
 		~Channel() {};
 		std::string				getChannelName(void) const						{return (this->_channelName);};
@@ -51,6 +53,7 @@ class Channel
 		std::string 			getClientList(void);
 		std::string 			getOperatorList(void);
 		std::string 			getLastTopicChangeTime(void) const;
+		std::string 			getCreation(void) const;
 		int						isOperator(Client &cl);
 		void					sendMessageToClient(std::string const & messageToSend);
 		void					toggleChannelMode(Client &cl, std::string message, char action);
@@ -64,5 +67,6 @@ class Channel
 		bool					_isTopic;
 		std::string				_lastChange;
 		time_t					_lastTopicChange;
+		time_t					_CreationDate;
 		struct mode				_mode;
 };

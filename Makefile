@@ -49,7 +49,7 @@ SRC = \
 	src/commands/part.cpp \
 	src/commands/quit.cpp \
 	src/commands/invite.cpp \
-	src/bot/bot.cpp \
+	# src/bot/bot.cpp \
 
 INCLUDES = \
 	-I ./include/ \

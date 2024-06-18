@@ -57,6 +57,21 @@
 		"ctime": "cpp",
 		"bitset": "cpp",
 		"map": "cpp",
-		"regex": "cpp"
+		"regex": "cpp",
+		"__bit_reference": "cpp",
+		"__hash_table": "cpp",
+		"__split_buffer": "cpp",
+		"__tree": "cpp",
+		"set": "cpp",
+		"chrono": "cpp",
+		"condition_variable": "cpp",
+		"ratio": "cpp",
+		"mutex": "cpp",
+		"shared_mutex": "cpp",
+		"stop_token": "cpp",
+		"thread": "cpp",
+		"cfenv": "cpp",
+		"semaphore": "cpp",
+		"__nullptr": "cpp"
 	}
 }

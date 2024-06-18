@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interpretMode.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 22:29:15 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/18 16:45:15 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	Channel::isOperator(Client &cl)
 }
 
 void	Server::_manageOperator(Client &cl, std::vector<std::string> &splitted, char action, Channel *channel)
-{
+{		
 	if (splitted.size() < 4)
 	{
 		this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
@@ -87,6 +87,15 @@ bool	Server::_checkMode(Client &cl, Channel *channel, std::vector<std::string> s
 	return true;
 }
 
+std::string Channel::getCreation() const
+{
+	std::ostringstream oss;
+	
+	oss << this->_CreationDate;
+	std::string myString2 = oss.str();
+	return (myString2);
+}
+
 void	Server::_interpretMode(Client &cl, std::string message)
 {
 	if (!this->checkCommand("MODE", message, cl))
@@ -95,14 +104,19 @@ void	Server::_interpretMode(Client &cl, std::string message)
 	std::string	mode;
 	Channel *channel;
 	char action;
-	if (splitted.size() < 3)
-		return ;
-	mode = splitted[2];
 	channel = this->_channelExists(splitted[1]);
 	if (!channel)
-		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(channel->getChannelName())));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(splitted[1])));
 	if (!cl._isInChannel(*channel))
 		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(channel->getChannelName())));
+	if (!channel->isOperator(cl))
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getUserName(), channel->getChannelName()));
+	if (splitted.size() < 3)
+	{
+		this->_sendMessageToClient(":" + this->_hostname + " 329 " + cl.getNickName() + " " + splitted[1] + " "  + channel->getCreation() + "\r\n", &cl);
+		return ;
+	}
+	mode = splitted[2];
 	if (mode[0] == '-' || mode[0] == '+')
 	{
 		action = mode[0];
@@ -120,14 +134,17 @@ void	Server::_interpretMode(Client &cl, std::string message)
 		}
 		switch (mode[i])
 		{
+			// INVITATION CASE
 			case 'i':
 				channel->getMode().invitation = action == '+';
 				channel->toggleChannelMode(cl, "i", action);
 				break;
+			// TOPIC CASE
 			case 't':
 				channel->getMode().changeTopic = action == '+';
 				channel->toggleChannelMode(cl, "t", action);
 				break;
+			// PASSWORD CASE
 			case 'k':
 				if (splitted.size() < 4 && action == '+')
 				{
@@ -146,9 +163,11 @@ void	Server::_interpretMode(Client &cl, std::string message)
 					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -k\r\n");
 				splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
 				break;
+			// OPERATOR CASE
 			case 'o':
 				this->_manageOperator(cl, splitted, action, channel);
 				break;
+			// LIMIT CASE
 			case 'l':
 				if (splitted.size() < 4 && action == '+')
 				{

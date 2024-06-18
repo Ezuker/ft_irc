@@ -3,49 +3,90 @@
 /*                                                        :::      ::::::::   */
 /*   bot.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 04:39:29 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/18 15:12:00 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include <iostream>
-#include <sstream>
-#include <cstdio>
+#include "Bot.hpp"
 
-std::string cleanResponse(const std::string& response)
+std::string	strtrim(std::string s)
 {
-    std::string content = "\"content\": \"";
-    // if (response.find(content) != std::string::npos)
-    //     return ""; // No content found
-    // size_t size_pos = content.size();
-    return (response.substr(content.size(), content.size() - 1));
+	std::string strtrim(std::string s);
+	size_t first = s.find_first_not_of(" \t\n\r\f\v");
+
+	if (first == std::string::npos)
+		return "";
+
+	size_t last = s.find_last_not_of(" \t\n\r\f\v");
+
+	return s.substr(first, last - first + 1);
 }
 
-void Server::_execMicroshell(Client &client, const std::string &message)
+
+std::string cleanResponse(std::string & response)
 {
-    std::string command = message.substr(4);
+	int startpos;
+    std::string content = "\"content\": \"";
+    for (startpos = 0; startpos < response.size() && response[0] == ' '; startpos++)
+		response = response.substr(1);
+	return (response.substr(content.size(), response.size() - content.size() - 2));
+}
+
+void	Bot::_init(char *addr, int port, std::string password)
+{
+    struct sockaddr_in bot_addr;
+
+    this->_socket = socket(AF_INET, SOCK_STREAM, 0);
+    bot_addr.sin_family = AF_INET;
+	bot_addr.sin_port = htons(port);
+	bot_addr.sin_addr.s_addr =  inet_addr(addr);
+    if (connect(this->_socket, (sockaddr *)&bot_addr, sizeof(bot_addr)) < 0)
+	{
+		std::cerr << "Error: Connect() failed" << std::endl;
+		close(this->_socket);
+		this->_socket = -1;
+		return ;
+	}
+    std::string toSend = "PASS " + password + "\r\n" + "NICK Bot\r\n" + "USER Bot 0 * :chatgpt\r\n";
+    write(this->_socket, toSend.c_str(), toSend.size());
+}
+
+void Bot::_execMicroshell(std::string command, const std::string &name)
+{
+	if (!command.empty() && command.back() == '\n')
+    {
+        command.erase(command.size() - 1);
+    }
+	std::cout << command << std::endl;
     const char *microshellPath = "./command";
     const char *apiUrl = "https://api.openai.com/v1/chat/completions";
-
-    // Construire la commande pour `curl` avec l'API de complétion de OpenAI
+	std::ifstream	env;
+    std::string response;
+	env.open(".env");
+    std::string apiKey;
+	std::getline(env, apiKey);
     std::stringstream ss;
-    ss << microshellPath << " /bin/curl -X POST -H \"Authorization: Bearer " << apiKey << "\" -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-3.5-turbo\",\"messages\":[{\"role\": \"user\", \"content\": \"" << command << "\"}],\"max_tokens\":150}' \"" << apiUrl << "\"";
-    std::string curlCommand = ss.str();
-
+    ss << microshellPath << " /bin/curl -X POST -H \"Authorization: Bearer ";
+	ss << apiKey << "\" -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-3.5-turbo\",\"messages\":[{\"role\": \"user\", \"content\": \"";
+	ss << command.substr(0, command.size() - 1); 
+	ss << "\"}],\"max_tokens\":150}' \"";
+	ss << apiUrl << "\"";
+	std::string curlCommand = ss.str();
     FILE *pipe = popen(curlCommand.c_str(), "r");
-    if (!pipe) {    
+    if (!pipe)
+    {    
         std::cerr << "Erreur lors de l'exécution de curl" << std::endl;
         return;
     }
 
     char result[1024];
-    std::string response;
     std::string checker;
     while (fgets(result, sizeof(result), pipe) != NULL)
 	{
+		std::cout << result << std::endl;
         checker = result;
         if (checker.find("\"content\"") != std::string::npos)
         {
@@ -61,10 +102,90 @@ void Server::_execMicroshell(Client &client, const std::string &message)
         response += result;
     }
     pclose(pipe);
-
-
-    this->_sendMessageToClient(cleanResponse(response), &client);
-    // std::string test = " \"content\": \"Il était une fois une petite fille nommée Lily, qui vivait dans un petit village en bordure de la forêt. Un jour, en se promenant dans les bois, elle découvrit un mystérieux livre ancien caché sous un arbre. Intriguée, elle l'ouvrit et fut transportée dans un monde magique et enchanté.\n\nDans ce monde, les arbres parlaient, les animaux dansaient et les fleurs chantaient. Lily se fit de nombreux amis et apprit de nombreuses choses sur la nature et la magie. Elle était tellement captivée par ce nouveau monde qu'elle ne voulait plus en partir.\n\nMais un jour, le\"";
-    // cleanResponse(test);
+    if (response.size())
+    {
+        response = cleanResponse(response);
+		std::cout << "reponse SAY : " << response << std::endl;
+    	std::string toSend = "PRIVMSG " + name + " :";
+		toSend += response;
+		toSend += "\r\n";
+		std::cout << "BOT SAY " << toSend << std::endl;
+        write(this->_socket, toSend.c_str(), toSend.size());
+    }
 }
 
+void	Bot::parse_message(std::string message)
+{
+	if (message.find("PRIVMSG ") == std::string::npos)
+		return ;
+	int start_len;
+	std::string response;
+	
+	response = message;
+	_targetName = "";
+	if (response[0] == ':')
+		response.substr(1);
+	for (int i = 0; i < response.size(); i++)
+	{
+		if (response[0] == '!')
+		{
+			response = response.substr(1);
+			break ;
+		}
+		_targetName += response.substr(0, 1);
+		response = response.substr(1);
+	}
+	for (start_len = 0; start_len < response.size(); start_len++)
+	{
+		if (!response.substr(0, 8).compare("PRIVMSG "))
+			break ;
+		response = response.substr(1);
+	}	
+	while (response.size() && response[0] != ':')
+		response = response.substr(1);
+	this->_execMicroshell(response.substr(1), _targetName.substr(1));
+}
+
+int main(int argc, char **argv)
+{
+	if (argc != 4)
+	{
+		std::cout << "\033[1;91mERROR: Bad execution\033[0m" << std::endl;
+		std::cout << "\033[1;93m	./bot [IP] [PORT] [PASSWORD]" << std::endl;
+		return (1);
+	}
+	Bot ChatBot(argv[1], atoi(argv[2]), argv[3]);
+	char buffer[1024];
+	memset(buffer, 0, 1024);
+    
+	while (true)
+	{
+		int bytes_received = recv(ChatBot.getSocket(), buffer, 1024, 0);
+		if (bytes_received > 0)
+        {
+			std::string message(buffer, bytes_received);	
+			std::cout << "Message recu: " << message << std::endl;
+			ChatBot.parse_message(message);
+            // Traiter le message reçu
+            if (std::string(buffer).find("PING") != std::string::npos)
+            {
+                std::string pongResponse = "PONG " + std::string(buffer).substr(std::string(buffer).find(":") + 1);
+                send(ChatBot.getSocket(), pongResponse.c_str(), pongResponse.length(), 0);
+            }
+        }
+        else if (bytes_received == 0)
+        {
+            // Connexion fermée par le serveur
+            std::cerr << "Connexion fermée par le serveur" << std::endl;
+            return (1);
+        }
+        else
+        {
+            // Erreur lors de la réception
+            std::cerr << "Erreur lors de la réception" << std::endl;
+            return (1);
+	        }
+	}
+	close(ChatBot.getSocket());
+    return (1);
+}

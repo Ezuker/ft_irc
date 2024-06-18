@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nickname.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 22:13:53 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/18 16:38:11 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,19 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 	else if (isValidName(toSet))
 	{
 		std::string messageToSend = getMask(cl) + message + "\r\n";
-		send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-		cl.setNickName(toSet);
+		if (cl.getNickName().empty())
+		{
+			send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+			cl.setNickName(toSet);
+		}
+		else
+		{
+			std::vector<Channel *>::iterator it = cl.getBelongChannel().begin();
+			for (; it != cl.getBelongChannel().end(); ++it)
+			{
+				(*it)->sendMessageToClient(messageToSend);
+			}
+		}
 	}
 	else if (!toSet.size())
 		this->sendErrToClient(cl, ERR_NONICKNAMEGIVEN);
