@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:55:30 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/14 17:55:46 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:14:02 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,5 @@ int	Server::_initServer()
 		return (0);
 	}
 	this->_fds.push_back(this->_createPollfd(this->_fdSocketServ, POLLIN, 0));
-	std::cout << this->_fds[0].fd << std::endl;
-	std::cout << this->_fds[0].events << std::endl;
-	std::cout << this->_fds[0].revents << std::endl;
 	return (1);
 }

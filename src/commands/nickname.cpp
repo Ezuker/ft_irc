@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 11:40:12 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:13:53 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 		std::string messageToSend = getMask(cl) + message + "\r\n";
 		send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 		cl.setNickName(toSet);
-		std::cout << "Nickname set to : " << toSet << std::endl;
 	}
 	else if (!toSet.size())
 		this->sendErrToClient(cl, ERR_NONICKNAMEGIVEN);

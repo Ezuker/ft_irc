@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 11:42:19 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 23:57:36 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,66 +52,77 @@ void	Server::_sendMessageToClient(const std::string & message, Client *client)
 
 void	Server::_checkMessage(std::string message, unsigned int &i)
 {
-	std::cout << "message sent by client (hexchat): " << message << std::endl;
 	switch (this->_getCommand(message, this->_clients[i - 1]))
 	{
 		case 1: // NICKNAME
 		{
+			printServer("\033[1;95mCommand NICK triggered ");
 			this->_nicknameCase(*this->_clients[i - 1], message);
 			break;
 		}
 		case 2: // USERNAME
 		{
+			printServer("\033[1;95mCommand USER triggered ");
 			this->_usernameCase(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 3: // JOIN	
 		{
+			printServer("\033[1;95mCommand JOIN triggered ");
 			this->_joinChannel(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 4: //PASS
 		{
+			printServer("\033[1;95mCommand PASS triggered ");
 			this->_passCase(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 5: //PRIVMSG
 		{
+			printServer("\033[1;95mCommand PRIVMSG triggered ");
 			this->_privmsgCase(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 6: //KICK
 		{
+			printServer("\033[1;95mCommand KICK triggered ");
 			this->_kickCase(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 7: //TOPIC
 		{
+			printServer("\033[1;95mCommand TOPIC triggered ");
 			this->_changeTopic(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 8: //PART
 		{
+			printServer("\033[1;95mCommand PART triggered ");
 			this->_partCase(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 9:
 		{
+			printServer("\033[1;95mCommand QUIT triggered ");
 			this->_removeClient(i, message);
 			break ;
 		}
 		case 10:
 		{
+			printServer("\033[1;95mCommand INVITE triggered ");
 			this->_inviteCase(*this->_clients[i - 1], message);
 			break ;
 		}
 		case 11:
 		{
 			this->_interpretMode(*this->_clients[i - 1], message);
+			printServer("\033[1;95mCommand MODE triggered ");
 			break ;
 		}
 		case 12:
 		{
+			printServer("\033[1;95mCommand BOT triggered ");
 			this->_execMicroshell(*this->_clients[i - 1], message);
 			break ;
 		}
@@ -150,6 +161,13 @@ int	Server::_handleMessage(unsigned int &i)
 		std::vector<std::string> messages = split(message, '\n');
 		for (size_t messageIndex = 0; messageIndex < messages.size(); messageIndex++)
 		{
+			if (message.find("\n") == std::string::npos)
+			{
+				this->_clients[i - 1]->getBuffer() += message;
+				continue;
+			}
+			messages[messageIndex] = this->_clients[i - 1]->getBuffer() + messages[messageIndex];
+			this->_clients[i - 1]->getBuffer() = "";
 			messages[messageIndex] = strtrim(messages[messageIndex]);
 			if (this->_clients[i - 1]->getAccess())
 				this->_checkMessage(messages[messageIndex], i);

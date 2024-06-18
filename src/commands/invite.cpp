@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 11:00:29 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 20:36:36 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,15 @@ void	Server::_inviteCase(Client & cl, std::string const & message)
 			break ;
 	}
 	if (it == this->_clients.end())
-		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), splitted[2])));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(splitted[2])));
 	Channel *toSend = this->_channelExists(splitted[2]);
 	if (!toSend)
-		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), splitted[2])));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(splitted[2])));
 	if (!cl._isInChannel(*toSend))
-		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(cl.getNickName(), toSend->getChannelName())));
+		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(toSend->getChannelName())));
 	std::string messageToSend = ":" + this->_hostname + " 341 " + (*it)->getNickName() + " " + cl.getNickName() + " " + splitted[2] + "\r\n";
 	send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 	messageToSend = getMask(cl) + message + "\r\n";
 	send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 	toSend->getInvites().push_back((*it));
 }
- 

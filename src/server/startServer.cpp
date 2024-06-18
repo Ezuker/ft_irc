@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:58:23 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/13 16:26:30 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:14:05 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int     Server::startServer()
 {
 	if (!this->_initServer())
 		return (0);
-	std::cout << "IRC server listening on port: " << this->_port << std::endl;
 	while (true)
 	{
 		int poll_count = poll(this->_fds.data(), this->_fds.size(), -1);

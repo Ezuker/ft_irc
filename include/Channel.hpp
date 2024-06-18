@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:32:46 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 07:54:56 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:21:49 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ class Channel
 		std::string 			getLastTopicChangeTime(void) const;
 		int						isOperator(Client &cl);
 		void					sendMessageToClient(std::string const & messageToSend);
+		void					toggleChannelMode(Client &cl, std::string message, char action);
 
 	private:
-		
 		std::vector<Client *>	_clients;
 		std::vector<Client *>	_operators;
 		std::vector<Client *>	_invites;

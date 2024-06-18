@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 07:44:42 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 11:16:13 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:17:51 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void	Server::_changeTopic(Client & cl, std::string message)
 
 	channel = this->_channelExists(tokens[1]);
 	if (!channel)
-		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), tokens[1])));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(tokens[1])));
 	if (!cl._isInChannel(*channel))
-		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName())));
+		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(channel->getChannelName())));
 	std::vector<Client *> operatorList = channel->getOperators();
 	std::vector<Client *>::iterator toFind;
 
@@ -53,8 +53,7 @@ void	Server::_changeTopic(Client & cl, std::string message)
 					std::string messageToSend = ":" + this->_hostname + " 332 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getTopic() + "\r\n";
 					messageToSend += ":" + this->_hostname + " 333 " +  cl.getNickName() + " " + channel->getChannelName() + " " + channel->getLastChange() + channel->getLastTopicChangeTime() + "\r\n";
 					channel->setIsTopic(true);
-					for (; it != clientList.end(); ++it)
-						send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);	
+					send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);	
 				}
 			}
 			return ;
@@ -71,6 +70,6 @@ void	Server::_changeTopic(Client & cl, std::string message)
 		}
 	}
 	else
-		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()));
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getUserName(), channel->getChannelName()));
 	
 }

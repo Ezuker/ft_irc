@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 10:18:23 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:13:32 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ std::string Channel::getMaskList(void)
 		else
 			result += " " + (*it)->getNickName() + "!" + (*it)->getUserName() + "@" + (*it)->getHostName();
 	}
-	std::cout << result << std::endl;
 	return (result);
 }
 
@@ -38,7 +37,6 @@ std::string Channel::getMaskList2(void)
 		else
 			result += " " + (*it)->getNickName();
 	}
-	std::cout << result << std::endl;
 	return (result);
 }
 
@@ -51,7 +49,6 @@ std::string Channel::getClientList(void)
 	{
 		result += " " + (*it)->getNickName();
 	}
-	std::cout << result << std::endl;
 	return (result);
 }
 
@@ -64,6 +61,5 @@ std::string Channel::getOperatorList(void)
 	{
 		result += " @" + (*it)->getNickName();
 	}
-	std::cout << result << std::endl;
 	return (result);
 }

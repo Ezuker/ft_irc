@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 11:11:43 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:13:40 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 		return (this->sendErrToClient(cl, ERR_BADCHANMASK(cl.getNickName())));
 	Channel *channel = this->_channelExists(channelName);
 	if (!channel)
-		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), channelName)));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(channelName)));
 	if (!cl._isInChannel(*channel))
-		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName())));
+		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(channel->getChannelName())));
 	std::vector<Client *> operatorList = channel->getOperators();
 	std::vector<Client *>::iterator toFind;
 
@@ -66,8 +66,6 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 		{
 			std::string messageToSend;
 			std::vector<Client *>::iterator tmp = it;
-			std::cout << tokens.size() << std::endl;
-			std::cout << message << std::endl;
 			if (tokens.size() >= 4)
 				messageToSend = getMask(cl) + message + "\r\n";
 			else
@@ -79,5 +77,5 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 		}
 	}
 	else
-		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()));
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getUserName(), channel->getChannelName()));
 }

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:21:17 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 11:04:34 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 23:57:59 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ class	Server
 		
 		// MODE
 		void	_interpretMode(Client &cl, std::string mode);
-		void	_manageOperator(Client &cl, std::vector<std::string> splitted, char action, Channel *channel);
+		void	_manageOperator(Client &cl, std::vector<std::string> &splitted, char action, Channel *channel);
+		bool	_checkMode(Client &cl, Channel *channel, std::vector<std::string> splitted);
 
 		//	Channel
 		void	_joinChannel(Client & cl, std::string & message);

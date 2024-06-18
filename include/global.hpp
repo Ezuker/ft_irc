@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 11:29:31 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:26:01 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,18 @@
 # define ERR_ERRONEUSNICKNAME(n) "432 " + n + " :Erroneous nickname\r\n"
 
 //CHANNEL
-# define ERR_NOSUCHCHANNEL(n, c) "401 " + n + " " + c + " :No such channel/nick\r\n"
-# define ERR_CHANOPRIVSNEEDED(n, c) "482 " + n + " " + c + " :No such permission\r\n"
-# define ERR_NOTONCHANNEL(n, c) "442 " + n + " " + c + " :Not on channel\r\n"
+# define ERR_NOSUCHCHANNEL(c) "403 " + c + " :No such channel\r\n"
+# define ERR_NOSUCHNICK(c) "401 " + c + " :No such nick/channel\r\n"
+# define ERR_CHANOPRIVSNEEDED(ch, cl) "482 "+ ch + " " + cl + " :No such permission\r\n"
+# define ERR_NOTONCHANNEL(c) "442 " + c + " :You're not on that channel\r\n"
 # define ERR_BADCHANMASK(n) "476 " + n + " :The specified channel name is invalid.\r\n"
 # define ERR_CHANNELISFULL(c) "471 " + c + " :Cannot join channel (+l)\r\n"
 # define ERR_INVITEONLYCHAN(c) "473 " + c + " :Cannot join channel (+i)\r\n"
 # define ERR_BADCHANNELKEY(c) "475 " + c + " :Cannot join channel (+k)\r\n"
+# define ERR_KEYSET(c) "467 " + c + " :Channel key already set\r\n"
+
+//MODE
+# define ERR_UMODEUNKNOWNFLAG "501 :Unknown MODE flag\r\n"
 
 //INVITE
 # define ERR_USERONCHANNEL(n, c) "443 " + n + " " + c + " :is already on channel\r\n"
@@ -65,5 +70,6 @@
 std::string	strtrim(std::string s);
 std::vector<std::string> split(std::string toSplit, char splitter);
 bool isValidName(const std::string& nickname);
+void    printServer(std::string message);
 
 #endif

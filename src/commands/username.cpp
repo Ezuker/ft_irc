@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:15 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 11:16:44 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:48:04 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,18 @@ void	Server::_usernameCase(Client & cl, std::string const & message)
 	if (!this->checkCommand("USER", message, cl))
 		return ;
 	toSet = strtrim(toSet);
+	std::vector<std::string> splits = split(message, ' ');
+	if (splits.size() != 5 || splits[4][0] != ':')
+	{
+		this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "USER"));
+		return ;
+	}
 	toSet = split(message, ' ')[1];
 	if (usernameExist(this->_clients, toSet))
 		this->sendErrToClient(cl, ERR_ALREADYREGISTERED(toSet));
 	else
 	{
 		cl.setUserName(toSet);
-		std::cout << "Username set to : " << toSet << std::endl;
 	}
 	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 02:56:26 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 11:29:41 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 18:07:43 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	Server::_passCase(Client &cl, const std::string &message)
 {
+	if (message == "PASS")
+		return (this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "PASS")));
 	if (cl.getAccess())
 		this->sendErrToClient(cl, ERR_ALREADYREGISTERED(cl.getNickName()));
 	else 

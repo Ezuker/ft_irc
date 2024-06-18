@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 11:21:55 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:29:15 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,14 @@ int	Channel::isOperator(Client &cl)
 	return (0);
 }
 
-void	Server::_manageOperator(Client &cl, std::vector<std::string> splitted, char action, Channel *channel)
+void	Server::_manageOperator(Client &cl, std::vector<std::string> &splitted, char action, Channel *channel)
 {
+	if (splitted.size() < 4)
+	{
+		this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
+		return;
+	}
 	std::vector<Client *>::iterator it = channel->getClients().begin();
-	for (; it != channel->getClients().end(); ++it)
-	{
-		if ((*it)->getNickName() == splitted[3])
-			break ;
-	}
-	if (it == channel->getClients().end())
-	{
-		this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), channel->getChannelName()));
-		return ;
-	}
-	if (!channel->isOperator(cl))
-		return ;
-	// insuffi perm
 	if (action == '-')
 	{
 		std::vector<Client *>::iterator itOp = channel->getOperators().begin();
@@ -51,6 +43,8 @@ void	Server::_manageOperator(Client &cl, std::vector<std::string> splitted, char
 	}
 	else if (action == '+')
 		channel->getOperators().push_back(*it);
+	channel->toggleChannelMode(cl, "o " + splitted[3], action);
+	splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
 }
 
 void	Channel::sendMessageToClient(std::string const & messageToSend)
@@ -59,6 +53,38 @@ void	Channel::sendMessageToClient(std::string const & messageToSend)
 
 	for (; it != this->_clients.end(); ++it)
 		send((*it)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+}
+
+void	Channel::toggleChannelMode(Client &cl, std::string message, char action)
+{
+	if (action == '+')
+		this->sendMessageToClient(getMask(cl) + "MODE " + this->getChannelName() + " +" + message + "\r\n");
+	else
+		this->sendMessageToClient(getMask(cl) + "MODE " + this->getChannelName() + " -" + message + "\r\n");
+}
+
+bool	Server::_checkMode(Client &cl, Channel *channel, std::vector<std::string> splitted)
+{
+	/* Check if channel exists */
+	std::vector<Channel *>::iterator itChan = this->_channels.begin();
+	for (; itChan != this->_channels.end(); ++itChan)
+	{
+		if ((*itChan)->getChannelName() == splitted[1])
+			break;
+	}
+	if (itChan == this->_channels.end())
+	{
+		this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(splitted[1]));
+		return false;
+	}
+
+	/* Check if client is an operator */
+	if (!channel->isOperator(cl))
+	{
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getUserName(), channel->getChannelName()));
+		return false;
+	}
+	return true;
 }
 
 void	Server::_interpretMode(Client &cl, std::string message)
@@ -74,9 +100,9 @@ void	Server::_interpretMode(Client &cl, std::string message)
 	mode = splitted[2];
 	channel = this->_channelExists(splitted[1]);
 	if (!channel)
-		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(cl.getNickName(), channel->getChannelName())));
+		return (this->sendErrToClient(cl, ERR_NOSUCHCHANNEL(channel->getChannelName())));
 	if (!cl._isInChannel(*channel))
-		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(cl.getNickName(), channel->getChannelName())));
+		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(channel->getChannelName())));
 	if (mode[0] == '-' || mode[0] == '+')
 	{
 		action = mode[0];
@@ -86,73 +112,59 @@ void	Server::_interpretMode(Client &cl, std::string message)
 		action = '+';
 	for (size_t i = 0; i < mode.size(); i++)
 	{
-		if (mode[i] == 'i')
+		if (!this->_checkMode(cl, channel, splitted))
 		{
-			channel->getMode().invitation = (mode[i] == 'i') ? (action == '+') : false;
-			if (action == '+')
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +i" + "\r\n");
-			else
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -i" + "\r\n");
+			if (splitted.size() > 3)
+				splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
+			continue ;
 		}
-		if (mode[i] == 't')
+		switch (mode[i])
 		{
-			channel->getMode().changeTopic = (mode[i] == 't') ? (action == '+') : false;
-			if (action == '+')
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +t" + "\r\n");
-			else
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -t" + "\r\n");
-		}
-		if (mode[i] == 'k')
-		{
-			if (action == '+')
-			{
-				if (splitted.size() < 4)
+			case 'i':
+				channel->getMode().invitation = action == '+';
+				channel->toggleChannelMode(cl, "i", action);
+				break;
+			case 't':
+				channel->getMode().changeTopic = action == '+';
+				channel->toggleChannelMode(cl, "t", action);
+				break;
+			case 'k':
+				if (splitted.size() < 4 && action == '+')
 				{
 					this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
 					continue;
 				}
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +k " + splitted[3] + "\r\n");
-				channel->getMode().password = splitted[3];
-			}
-			else
-			{
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -k " + splitted[3] + "\r\n");
-				channel->getMode().password = "";
-			}
-			splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
-		}
-		if (mode[i] == 'o')
-		{
-			if (splitted.size() < 4)
-			{
-				this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
-				continue;
-			}
-			this->_manageOperator(cl, splitted, action, channel);
-			if (action == '+')
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +o " + splitted[3] + "\r\n");
-			else
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -o " + splitted[3] + "\r\n");
-			splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
-		}
-		if (mode[i] == 'l')
-		{
-			if (action == '+')
-			{
-				if (splitted.size() < 4)
+				if (channel->getMode().password != "" && action == '+')
+				{
+					this->sendErrToClient(cl, ERR_KEYSET(channel->getChannelName()));
+					continue;
+				}
+				channel->getMode().password = (action == '+') ? splitted[3] : "";
+				if (action == '+')
+					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +k " + splitted[3] + "\r\n");
+				else
+					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -k\r\n");
+				splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
+				break;
+			case 'o':
+				this->_manageOperator(cl, splitted, action, channel);
+				break;
+			case 'l':
+				if (splitted.size() < 4 && action == '+')
 				{
 					this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
 					continue;
 				}
-				channel->getMode().userLimit = atoi(splitted[3].c_str());
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +l " + splitted[3] + "\r\n");
-			}
-			else
-			{
-				channel->getMode().userLimit = -1;
-				channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -l " + splitted[3] + "\r\n");
-			}
-			splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
+				channel->getMode().userLimit = (action == '+') ? atoi(splitted[3].c_str()) : -1;
+				if (action == '+')
+					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +l " + splitted[3] + "\r\n");
+				else
+					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -l\r\n");
+				splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
+				break;
+			default:
+				this->sendErrToClient(cl, ERR_UMODEUNKNOWNFLAG);
 		}
 	}
 }
+

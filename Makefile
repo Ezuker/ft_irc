@@ -30,6 +30,7 @@ SRC = \
 	src/utils/getMask.cpp \
 	src/utils/isValidName.cpp \
 	src/utils/checkCommand.cpp \
+	src/utils/printServer.cpp \
 	src/server/init.cpp \
 	src/server/manageClient.cpp \
 	src/server/startServer.cpp \
