@@ -53,6 +53,9 @@ SRC = \
 
 SRCBONUS = \
 	src/bot/bot.cpp \
+	src/bot/utils.cpp \
+	src/bot/parse_message.cpp \
+	src/bot/main.cpp \
 
 INCLUDES = \
 	-I ./include/ \
