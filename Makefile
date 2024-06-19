@@ -51,14 +51,19 @@ SRC = \
 	src/commands/invite.cpp \
 	# src/bot/bot.cpp \
 
+SRCBONUS = \
+	src/bot/bot.cpp \
+
 INCLUDES = \
 	-I ./include/ \
 
 OBJ = $(SRC:%.cpp=$(BUILD_DIR)%.o)
+OBJBonus = $(SRCBONUS:%.cpp=$(BUILD_DIR)%.o)
 BUILD_DIR = ./build/
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 NAME = ircserv
+NAMEB = bot
 BOOL_EXEC = 0
 EXEC = ./$(NAME)
 IS_COMPILING = 0
@@ -91,6 +96,21 @@ $(BUILD_DIR)%.o: %.cpp
 	@echo "$(_BOLD)$(_RED) $< : $(_END) $(_CYAN) $(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@ $(_END)"
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
+bonus: $(OBJBonus)
+	@echo
+	@echo "$(_BOLD)$(_CYAN)Compiling ($(_RED)$@$(_CYAN))$(_END)"
+	@echo
+	@echo " $(_BOLD)$(_RED)$(NAME) : $(_END)$(_CYAN) $(CXX) $(OBJBonus) $(_END)"
+	@$(CXX) $(CXXFLAGS) -o $(NAMEB) $(OBJBonus)
+	@echo
+	@ \
+	if [ $(BOOL_EXEC) -eq 1 ]; then \
+		@echo "$(_BOLD)$(_CYAN)Executing...$(_END)"; \
+		@echo; \
+		$(EXEC); \
+	fi
+	
+
 clean:
 	@echo "$(_BOLD)$(_CYAN)Cleaning...$(_END)"
 	@rm -rf $(BUILD_DIR)
@@ -98,7 +118,8 @@ clean:
 
 fclean: clean
 	@rm -f $(NAME)
+	@rm -f $(NAMEB)
 
 re: fclean all
 
-.PHONY: all clean fclean re valgrind
+.PHONY: all bonus clean fclean re valgrind

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 02:56:26 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 18:07:43 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/18 19:18:57 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	Server::_passCase(Client &cl, const std::string &message)
 
 void	Server::_checkPassword(Client &cl, std::string message)
 {
+	if (!std::strncmp(message.c_str(), "CAP LS", 6))
+		return ;
 	if (!std::strncmp(message.c_str(), "PASS", 4))
 	{
 		if (message == "PASS")

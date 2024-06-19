@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 16:45:15 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/18 19:13:59 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,43 @@ int	Channel::isOperator(Client &cl)
 }
 
 void	Server::_manageOperator(Client &cl, std::vector<std::string> &splitted, char action, Channel *channel)
-{		
+{
+	std::cout << action << std::endl;
 	if (splitted.size() < 4)
 	{
 		this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
 		return;
 	}
-	std::vector<Client *>::iterator it = channel->getClients().begin();
+	std::vector<Client *>::iterator itOp = channel->getClients().begin();
+	std::cout << splitted[1] << std::endl;
+	std::cout << splitted[2] << std::endl;
+	std::cout << splitted[3] << std::endl;
+	for (; itOp != channel->getClients().end(); ++itOp)
+	{
+		if ((*itOp)->getNickName() == splitted[3])
+			break ;
+	}
+	if (itOp == channel->getClients().end())
+		return ;
 	if (action == '-')
 	{
-		std::vector<Client *>::iterator itOp = channel->getOperators().begin();
-		for (; itOp != channel->getOperators().end(); ++itOp)
+		if (channel->isOperator(**itOp))
 		{
-			if ((*itOp)->getNickName() == splitted[3])
-				break ;
+			std::vector<Client *>::iterator it;
+	
+			it = find(channel->getOperators().begin(), channel->getOperators().end(), *itOp);
+			if (it != channel->getOperators().end())
+				channel->getOperators().erase(it);
 		}
-		if (itOp != channel->getOperators().end())
-			channel->getOperators().erase(itOp);
+		else
+			return ;
 	}
 	else if (action == '+')
-		channel->getOperators().push_back(*it);
+	{
+		if (channel->isOperator(**itOp))
+			return ;
+		channel->getOperators().push_back(*itOp);
+	}
 	channel->toggleChannelMode(cl, "o " + splitted[3], action);
 	splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
 }

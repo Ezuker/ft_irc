@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/18 17:02:08 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:33:24 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,14 @@ void	Server::_joinChannel(Client & cl, std::string & message)
 				return ;
 			}
 		}
-		if (channelCheck->getMode().userLimit > 0 && static_cast<size_t>(channelCheck->getMode().userLimit) >= channelCheck->getClients().size())
+		if (channelCheck->getMode().userLimit > 0 && static_cast<size_t>(channelCheck->getMode().userLimit) <= channelCheck->getClients().size())
 			return (this->sendErrToClient(cl, ERR_CHANNELISFULL(toSet[1])));
 		if (!channelCheck->getMode().password.empty() && channelCheck->getMode().password != toSet[2])
 			return (this->sendErrToClient(cl, ERR_BADCHANNELKEY(toSet[1])));
 		channelCheck->getClients().push_back(&cl);
 		cl.getBelongChannel().push_back(channelCheck);
-		channelCheck->getInvites().erase(findInvite);
+		if (channelCheck->getMode().invitation)
+			channelCheck->getInvites().erase(findInvite);
 		this->_refreshList(channelCheck, cl);
 	}
 	else

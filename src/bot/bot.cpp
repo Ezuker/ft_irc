@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 15:12:00 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:39:55 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ std::string	strtrim(std::string s)
 
 std::string cleanResponse(std::string & response)
 {
-	int startpos;
+	size_t startpos;
     std::string content = "\"content\": \"";
     for (startpos = 0; startpos < response.size() && response[0] == ' '; startpos++)
 		response = response.substr(1);
@@ -56,7 +56,7 @@ void	Bot::_init(char *addr, int port, std::string password)
 
 void Bot::_execMicroshell(std::string command, const std::string &name)
 {
-	if (!command.empty() && command.back() == '\n')
+	if (!command.empty() && command[command.size() - 1] == '\n')
     {
         command.erase(command.size() - 1);
     }
@@ -65,9 +65,13 @@ void Bot::_execMicroshell(std::string command, const std::string &name)
     const char *apiUrl = "https://api.openai.com/v1/chat/completions";
 	std::ifstream	env;
     std::string response;
-	env.open(".env");
+	env.open("./src/bot/.env");
     std::string apiKey;
-	std::getline(env, apiKey);
+	if (!env.is_open() || !std::getline(env, apiKey))
+    {
+        std::cerr << "Erreur lors de la lecture du fichier .env" << std::endl;
+        return;
+    }
     std::stringstream ss;
     ss << microshellPath << " /bin/curl -X POST -H \"Authorization: Bearer ";
 	ss << apiKey << "\" -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-3.5-turbo\",\"messages\":[{\"role\": \"user\", \"content\": \"";
@@ -118,14 +122,14 @@ void	Bot::parse_message(std::string message)
 {
 	if (message.find("PRIVMSG ") == std::string::npos)
 		return ;
-	int start_len;
+	size_t start_len;
 	std::string response;
 	
 	response = message;
 	_targetName = "";
 	if (response[0] == ':')
 		response.substr(1);
-	for (int i = 0; i < response.size(); i++)
+	for (size_t i = 0; i < response.size(); i++)
 	{
 		if (response[0] == '!')
 		{
