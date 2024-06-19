@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 15:06:57 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 15:34:21 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,9 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 			if ((*it)->getNickName() == userToKick)
 				break ;
 		}
-		if (it != clientList.end())
+		if (it != clientList.end() && *it != &cl)
 		{
 			std::string messageToSend;
-			std::vector<Client *>::iterator tmp = it;
 			if (tokens.size() >= 4)
 				messageToSend = getMask(cl) + message + "\r\n";
 			else
@@ -73,9 +72,19 @@ void	Server::_kickCase(Client & cl, std::string const & message)
 			std::vector<Client *>::iterator itSender = clientList.begin();
 			for (; itSender != clientList.end(); ++itSender)
 				send((*itSender)->getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-			clientList.erase(tmp);
+
+			std::vector<Client *>::iterator	findClient = find(channel->getClients().begin(), channel->getClients().end(), *it);
+			if (findClient != channel->getClients().end())
+				channel->getClients().erase(findClient);
+			std::vector<Client *>::iterator findOperator = find(channel->getOperators().begin(), channel->getOperators().end(), *it);
+			if (findOperator != channel->getOperators().end())
+				channel->getOperators().erase(findOperator);
+			std::vector<Channel *>::iterator findChannel = find((*it)->getBelongChannel().begin(), (*it)->getBelongChannel().end(), channel);
+			if (findChannel != (*it)->getBelongChannel().end())
+				(*it)->getBelongChannel().erase(findChannel);
+			
 		}
 	}
 	else
-		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getUserName(), channel->getChannelName()));
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()));
 }

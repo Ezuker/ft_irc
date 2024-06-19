@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 19:13:59 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:35:58 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ bool	Server::_checkMode(Client &cl, Channel *channel, std::vector<std::string> s
 	/* Check if client is an operator */
 	if (!channel->isOperator(cl))
 	{
-		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getUserName(), channel->getChannelName()));
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()));
 		return false;
 	}
 	return true;
@@ -111,6 +111,11 @@ std::string Channel::getCreation() const
 	oss << this->_CreationDate;
 	std::string myString2 = oss.str();
 	return (myString2);
+}
+
+static bool is_digits(const std::string &str)
+{
+    return str.find_first_not_of("0123456789") == std::string::npos;
 }
 
 void	Server::_interpretMode(Client &cl, std::string message)
@@ -127,7 +132,7 @@ void	Server::_interpretMode(Client &cl, std::string message)
 	if (!cl._isInChannel(*channel))
 		return (this->sendErrToClient(cl, ERR_NOTONCHANNEL(channel->getChannelName())));
 	if (!channel->isOperator(cl))
-		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getUserName(), channel->getChannelName()));
+		this->sendErrToClient(cl, ERR_CHANOPRIVSNEEDED(cl.getNickName(), channel->getChannelName()));
 	if (splitted.size() < 3)
 	{
 		this->_sendMessageToClient(":" + this->_hostname + " 329 " + cl.getNickName() + " " + splitted[1] + " "  + channel->getCreation() + "\r\n", &cl);
@@ -153,11 +158,19 @@ void	Server::_interpretMode(Client &cl, std::string message)
 		{
 			// INVITATION CASE
 			case 'i':
+				if (action == '+' && channel->getMode().invitation)
+					break ;
+				if (action == '-' && !channel->getMode().invitation)
+					break ;
 				channel->getMode().invitation = action == '+';
 				channel->toggleChannelMode(cl, "i", action);
 				break;
 			// TOPIC CASE
 			case 't':
+				if (action == '+' && channel->getMode().changeTopic)
+					break ;
+				if (action == '-' && !channel->getMode().changeTopic)
+					break ;
 				channel->getMode().changeTopic = action == '+';
 				channel->toggleChannelMode(cl, "t", action);
 				break;
@@ -176,7 +189,9 @@ void	Server::_interpretMode(Client &cl, std::string message)
 				channel->getMode().password = (action == '+') ? splitted[3] : "";
 				if (action == '+')
 					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +k " + splitted[3] + "\r\n");
-				else
+				else if (channel->getMode().password.empty())
+					break;
+				else 
 					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -k\r\n");
 				splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
 				break;
@@ -191,6 +206,10 @@ void	Server::_interpretMode(Client &cl, std::string message)
 					this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
 					continue;
 				}
+				if (action == '-' && channel->getMode().userLimit == -1)
+					break ;
+				if ((!is_digits(splitted[3]) || atoi(splitted[3].c_str()) < 0 || atoi(splitted[3].c_str()) < static_cast<int>(channel->getClients().size())) && action == '+')
+					break ;
 				channel->getMode().userLimit = (action == '+') ? atoi(splitted[3].c_str()) : -1;
 				if (action == '+')
 					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +l " + splitted[3] + "\r\n");

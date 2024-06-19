@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   global.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 22:26:01 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:16:09 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 # define ERR_INVITEONLYCHAN(c) "473 " + c + " :Cannot join channel (+i)\r\n"
 # define ERR_BADCHANNELKEY(c) "475 " + c + " :Cannot join channel (+k)\r\n"
 # define ERR_KEYSET(c) "467 " + c + " :Channel key already set\r\n"
+# define ERR_INVITECL(c, c2, ch) "443 " + c + " " + c2 + " " + ch + " :is already on channel\r\n"
 
 //MODE
 # define ERR_UMODEUNKNOWNFLAG "501 :Unknown MODE flag\r\n"
@@ -64,8 +65,9 @@
 # include <algorithm>
 # include <stdlib.h>
 # include <cstring>
-#include <sstream>
+# include <sstream>
 # include <ctime>
+# include <signal.h>
 
 std::string	strtrim(std::string s);
 std::vector<std::string> split(std::string toSplit, char splitter);

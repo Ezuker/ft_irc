@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 18:39:55 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:57:20 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,26 @@ void	Bot::_init(char *addr, int port, std::string password)
     write(this->_socket, toSend.c_str(), toSend.size());
 }
 
+std::string removeSingleQuotes(const std::string& input)
+{
+    std::string output;
+    for (size_t i = 0; i < input.length(); ++i)
+    {
+        if (input[i] != '\'')
+        {
+            output += input[i];
+        }
+    }
+    return output;
+}
+
 void Bot::_execMicroshell(std::string command, const std::string &name)
 {
 	if (!command.empty() && command[command.size() - 1] == '\n')
     {
         command.erase(command.size() - 1);
     }
-	std::cout << command << std::endl;
+	command = removeSingleQuotes(command);
     const char *microshellPath = "./command";
     const char *apiUrl = "https://api.openai.com/v1/chat/completions";
 	std::ifstream	env;
@@ -79,10 +92,12 @@ void Bot::_execMicroshell(std::string command, const std::string &name)
 	ss << "\"}],\"max_tokens\":150}' \"";
 	ss << apiUrl << "\"";
 	std::string curlCommand = ss.str();
+	std::cout << curlCommand << std::endl;
     FILE *pipe = popen(curlCommand.c_str(), "r");
     if (!pipe)
     {    
         std::cerr << "Erreur lors de l'exécution de curl" << std::endl;
+		env.close();
         return;
     }
 
@@ -115,6 +130,7 @@ void Bot::_execMicroshell(std::string command, const std::string &name)
 		toSend += "\r\n";
 		std::cout << "BOT SAY " << toSend << std::endl;
         write(this->_socket, toSend.c_str(), toSend.size());
+		env.close();
     }
 }
 
@@ -150,6 +166,14 @@ void	Bot::parse_message(std::string message)
 	this->_execMicroshell(response.substr(1), _targetName.substr(1));
 }
 
+bool signalTriggered;
+
+void signalHandler(int signum)
+{
+    std::cout << "Interrupt signal (" << signum << ") received.\n";
+	signalTriggered = true;
+}
+
 int main(int argc, char **argv)
 {
 	if (argc != 4)
@@ -162,7 +186,7 @@ int main(int argc, char **argv)
 	char buffer[1024];
 	memset(buffer, 0, 1024);
     
-	while (true)
+	while (!signalTriggered)
 	{
 		int bytes_received = recv(ChatBot.getSocket(), buffer, 1024, 0);
 		if (bytes_received > 0)

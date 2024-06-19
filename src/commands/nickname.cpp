@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/18 16:38:11 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 14:18:39 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 		}
 		else
 		{
+			cl.setNickName(toSet);
 			std::vector<Channel *>::iterator it = cl.getBelongChannel().begin();
 			for (; it != cl.getBelongChannel().end(); ++it)
 			{

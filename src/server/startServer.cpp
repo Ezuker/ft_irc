@@ -6,12 +6,14 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:58:23 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 14:13:31 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:15:53 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "global.hpp"
+
+extern bool signalTriggered;
 
 int     Server::startServer()
 {
@@ -20,7 +22,7 @@ int     Server::startServer()
     std::stringstream ss;
 	ss << "\033[1;96mServer is listening on port " << this->_port << "...\033[0m";
 	printServer(ss.str());
-	while (true)
+	while (!signalTriggered)
 	{
 		int poll_count = poll(this->_fds.data(), this->_fds.size(), -1);
 		if (poll_count < 0)

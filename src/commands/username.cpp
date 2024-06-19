@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   username.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:15 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 22:48:04 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:37:18 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ void	Server::_usernameCase(Client & cl, std::string const & message)
 		this->sendErrToClient(cl, ERR_ALREADYREGISTERED(toSet));
 	else
 	{
+		if (cl.getUserName().empty())
+		{
+			std::string toSend = ":" + this->_hostname + " 001 " + cl.getNickName() + " Welcome to TeamWithoutSpeak Server we know you as (" + cl.getNickName() + ")\r\n";
+			send(cl.getIdentifier(), toSend.c_str(), toSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+		}
 		cl.setUserName(toSet);
 	}
 	return ;

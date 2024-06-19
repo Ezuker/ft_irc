@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:18:56 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/18 18:33:24 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:28:09 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	Server::_joinChannel(Client & cl, std::string & message)
 	Channel *channelCheck = this->_channelExists(toSet[1]);
 	if (channelCheck)
 	{
+		if (cl._isInChannel(*channelCheck))
+			return (this->sendErrToClient(cl, ERR_USERONCHANNEL(cl.getNickName(), channelCheck->getChannelName())));
 		std::vector<Client *>::iterator findInvite;
 		if (channelCheck->getMode().invitation)
 		{
@@ -37,8 +39,11 @@ void	Server::_joinChannel(Client & cl, std::string & message)
 		}
 		if (channelCheck->getMode().userLimit > 0 && static_cast<size_t>(channelCheck->getMode().userLimit) <= channelCheck->getClients().size())
 			return (this->sendErrToClient(cl, ERR_CHANNELISFULL(toSet[1])));
-		if (!channelCheck->getMode().password.empty() && channelCheck->getMode().password != toSet[2])
-			return (this->sendErrToClient(cl, ERR_BADCHANNELKEY(toSet[1])));
+		if (!channelCheck->getMode().invitation)
+		{
+			if (!channelCheck->getMode().password.empty() && channelCheck->getMode().password != toSet[2])
+				return (this->sendErrToClient(cl, ERR_BADCHANNELKEY(toSet[1])));
+		}
 		channelCheck->getClients().push_back(&cl);
 		cl.getBelongChannel().push_back(channelCheck);
 		if (channelCheck->getMode().invitation)
@@ -77,7 +82,7 @@ int	Server::_createChannel(Client & cl, std::string name)
 	Channel *newChannel = new Channel(name, &cl);
 	newChannel->getMode().userLimit = -1;
 	newChannel->getMode().password = "";
-	newChannel->getMode().changeTopic = true;
+	newChannel->getMode().changeTopic = false;
 	newChannel->getMode().invitation = false;
 	cl.getBelongChannel().push_back(newChannel);
 	this->_channels.push_back(newChannel);

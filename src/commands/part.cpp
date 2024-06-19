@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 22:31:33 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 16:59:38 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 15:01:06 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	Server::_partCase(Client & cl, std::string const & message)
 	if (channel->getClients().empty())
 	{
 		findChannel = find(this->_channels.begin(), this->_channels.end(), channel);
-		if (findChannel != cl.getBelongChannel().end())
+		if (findChannel != this->_channels.end())
 		{
 			delete *findChannel;
 			this->_channels.erase(findChannel);

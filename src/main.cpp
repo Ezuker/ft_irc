@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/18 14:09:25 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 14:09:26 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:16:26 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "Client.hpp"
 #include "Server.hpp"
 #include <exception>
+
 
 void	checkArgv(const char *port, const char *pw)
 {
@@ -23,11 +24,20 @@ void	checkArgv(const char *port, const char *pw)
 			throw std::logic_error("Need alpha character in port");
 	if (strtold(port, 0x0) > 65535)
 		throw std::logic_error("Port can't be superior to 65535");
+	if (strtold(port, 0x0) < 1025)
+		throw std::logic_error("Port can't be inferior to 1025");
 	std::string s_pw = pw;
 	if (s_pw.size() > 256)
 		throw std::logic_error("Password can't be longer than 256");
 }
 
+bool signalTriggered;
+
+void signalHandler(int signum)
+{
+    std::cout << "Interrupt signal (" << signum << ") received.\n";
+	signalTriggered = true;
+}
 int main(int argc, char **argv)
 {
 	if (argc != 3)
@@ -43,6 +53,7 @@ int main(int argc, char **argv)
 	}
 	try
 	{
+		signal(SIGINT, signalHandler);
 		checkArgv(argv[1], argv[2]);
 		Server	myServer(atoi(argv[1]), argv[2], server_sock);
 		myServer.startServer();
