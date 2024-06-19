@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 22:14:02 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/16 09:13:30 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:42:05 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	Server::_removeClient(unsigned int &index, std::string message)
 {
 	this->_sendMessageToClient(message, this->_clients[index - 1]);
-	std::cerr << "Error: recv() failed or client disconnected" << std::endl;
+	printServer("\033[1;91mClient disconnected\033[0m");
 	close(this->_fds[index].fd);
 	this->_fds.erase(this->_fds.begin() + index);
 	Client *tmp = this->_clients[index - 1];

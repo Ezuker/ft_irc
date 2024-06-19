@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:55:30 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/17 22:14:02 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:41:08 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,13 @@ int	Server::_initServer()
 	server_addr.sin_addr.s_addr = INADDR_ANY;
 	if (bind(this->_fdSocketServ, (sockaddr *)&server_addr, sizeof(server_addr)) < 0)
 	{
-		std::cerr << "Error: bind() failed" << std::endl;
+		printServer("\033[1;91mError: Bind failed.\033[0m");
 		close(this->_fdSocketServ);
 		return (0);
 	}
 	if (listen(this->_fdSocketServ, 5) < 0)
 	{
-		std::cerr << "Error: listen() failed" << std::endl;
+		printServer("\033[1;91mError: Listen failed.\033[0m");
 		close(this->_fdSocketServ);
 		return (0);
 	}

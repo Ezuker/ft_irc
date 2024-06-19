@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 17:23:40 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:56:53 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ void Bot::_execMicroshell(std::string command, const std::string &name)
     std::string checker;
     while (fgets(result, sizeof(result), pipe) != NULL)
 	{
-		std::cout << result << std::endl;
         checker = result;
         if (checker.find("\"content\"") != std::string::npos)
         {
@@ -181,7 +180,6 @@ int main(int argc, char **argv)
 		if (bytes_received > 0)
         {
 			std::string message(buffer, bytes_received);	
-			std::cout << "Message recu: " << message << std::endl;
 			ChatBot.parse_message(message);
             if (std::string(buffer).find("PING") != std::string::npos)
             {

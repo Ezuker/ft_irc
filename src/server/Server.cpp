@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:40:03 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 16:17:26 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:39:22 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@ Server::~Server()
 	for (; it != this->_clients.end(); ++it)
 	{
 		if (*it)
+		{
+			if ((*it)->getIdentifier() > 0)
+				close((*it)->getIdentifier());
 			delete *it;
+		}
 	}
 	this->_clients.clear();
 	std::vector<Channel *>::iterator itchannel = this->_channels.begin();

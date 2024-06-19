@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/18 14:09:25 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 16:16:26 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:53:04 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,21 @@ bool signalTriggered;
 
 void signalHandler(int signum)
 {
-    std::cout << "Interrupt signal (" << signum << ") received.\n";
+	(void)signum;
+	printServer("\033[1;91mInterrupt signal\033[0m");
 	signalTriggered = true;
 }
 int main(int argc, char **argv)
 {
 	if (argc != 3)
 	{
-		std::cerr << "wrong arg" << std::endl;
+		printServer("\033[1;91mNot enough args\033[0m");
 		return (1);
 	}
 	int server_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (server_sock < 0)
 	{
-		std::cerr << "Error: socket() failed" << std::endl;
+		printServer("\033[1;91mError: socket() args\033[0m");
 		return 1;
 	}
 	try

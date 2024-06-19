@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   manageClient.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:54:31 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/16 03:49:02 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:40:39 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	Server::_addClient()
 	int client_sock = accept(this->_fdSocketServ, (sockaddr *)&client_addr, &client_addr_len);
 	if (client_sock < 0)
 	{
-		std::cerr << "Error client failed" << std::endl;
+		printServer("\033[1;91mClient failed.\033[0m");
 		return (0);
 	}
 	char ipstr[INET_ADDRSTRLEN];
