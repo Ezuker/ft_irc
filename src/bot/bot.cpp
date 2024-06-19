@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 16:57:20 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:23:40 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ void Bot::_execMicroshell(std::string command, const std::string &name)
 	ss << "\"}],\"max_tokens\":150}' \"";
 	ss << apiUrl << "\"";
 	std::string curlCommand = ss.str();
-	std::cout << curlCommand << std::endl;
     FILE *pipe = popen(curlCommand.c_str(), "r");
     if (!pipe)
     {    
@@ -124,12 +123,11 @@ void Bot::_execMicroshell(std::string command, const std::string &name)
     if (response.size())
     {
         response = cleanResponse(response);
-		std::cout << "reponse SAY : " << response << std::endl;
     	std::string toSend = "PRIVMSG " + name + " :";
 		toSend += response;
 		toSend += "\r\n";
-		std::cout << "BOT SAY " << toSend << std::endl;
         write(this->_socket, toSend.c_str(), toSend.size());
+		std::cout << "\033[1;91mBot sended a message.\033[0m" << std::endl;
 		env.close();
     }
 }
@@ -166,14 +164,6 @@ void	Bot::parse_message(std::string message)
 	this->_execMicroshell(response.substr(1), _targetName.substr(1));
 }
 
-bool signalTriggered;
-
-void signalHandler(int signum)
-{
-    std::cout << "Interrupt signal (" << signum << ") received.\n";
-	signalTriggered = true;
-}
-
 int main(int argc, char **argv)
 {
 	if (argc != 4)
@@ -185,8 +175,7 @@ int main(int argc, char **argv)
 	Bot ChatBot(argv[1], atoi(argv[2]), argv[3]);
 	char buffer[1024];
 	memset(buffer, 0, 1024);
-    
-	while (!signalTriggered)
+	while (true)
 	{
 		int bytes_received = recv(ChatBot.getSocket(), buffer, 1024, 0);
 		if (bytes_received > 0)
@@ -194,7 +183,6 @@ int main(int argc, char **argv)
 			std::string message(buffer, bytes_received);	
 			std::cout << "Message recu: " << message << std::endl;
 			ChatBot.parse_message(message);
-            // Traiter le message reçu
             if (std::string(buffer).find("PING") != std::string::npos)
             {
                 std::string pongResponse = "PONG " + std::string(buffer).substr(std::string(buffer).find(":") + 1);
@@ -203,16 +191,15 @@ int main(int argc, char **argv)
         }
         else if (bytes_received == 0)
         {
-            // Connexion fermée par le serveur
             std::cerr << "Connexion fermée par le serveur" << std::endl;
+			close(ChatBot.getSocket());
             return (1);
         }
         else
         {
-            // Erreur lors de la réception
             std::cerr << "Erreur lors de la réception" << std::endl;
             return (1);
-	        }
+	    }
 	}
 	close(ChatBot.getSocket());
     return (1);

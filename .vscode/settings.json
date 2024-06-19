@@ -72,6 +72,10 @@
 		"thread": "cpp",
 		"cfenv": "cpp",
 		"semaphore": "cpp",
-		"__nullptr": "cpp"
+		"__nullptr": "cpp",
+		"codecvt": "cpp",
+		"fstream": "cpp",
+		"iomanip": "cpp",
+		"filesystem": "cpp"
 	}
 }

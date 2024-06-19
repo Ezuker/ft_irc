@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/18 02:50:08 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/18 04:30:23 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:14:06 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <cstring>
 # include <fstream>
 # include <sstream>
+# include <signal.h>
 
 class Bot
 {
