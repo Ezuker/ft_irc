@@ -6,7 +6,7 @@
 /*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 17:56:53 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 18:01:09 by ehalliez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,7 @@ int main(int argc, char **argv)
 	Bot ChatBot(argv[1], atoi(argv[2]), argv[3]);
 	char buffer[1024];
 	memset(buffer, 0, 1024);
+	std::cout << "\033[1;90mBot connected.\033[0m" << std::endl;
 	while (true)
 	{
 		int bytes_received = recv(ChatBot.getSocket(), buffer, 1024, 0);
