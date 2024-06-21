@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interpretMode.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 18:37:19 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 16:35:58 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:59:01 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,12 @@ int	Channel::isOperator(Client &cl)
 
 void	Server::_manageOperator(Client &cl, std::vector<std::string> &splitted, char action, Channel *channel)
 {
-	std::cout << action << std::endl;
 	if (splitted.size() < 4)
 	{
 		this->sendErrToClient(cl, ERR_NEEDMOREPARAMS(cl.getNickName(), "MODE"));
 		return;
 	}
 	std::vector<Client *>::iterator itOp = channel->getClients().begin();
-	std::cout << splitted[1] << std::endl;
-	std::cout << splitted[2] << std::endl;
-	std::cout << splitted[3] << std::endl;
 	for (; itOp != channel->getClients().end(); ++itOp)
 	{
 		if ((*itOp)->getNickName() == splitted[3])
@@ -208,14 +204,15 @@ void	Server::_interpretMode(Client &cl, std::string message)
 				}
 				if (action == '-' && channel->getMode().userLimit == -1)
 					break ;
-				if ((!is_digits(splitted[3]) || atoi(splitted[3].c_str()) < 0 || atoi(splitted[3].c_str()) < static_cast<int>(channel->getClients().size())) && action == '+')
+				if (action == '+' && (!is_digits(splitted[3]) || atoi(splitted[3].c_str()) < 0 || atoi(splitted[3].c_str()) < static_cast<int>(channel->getClients().size())))
 					break ;
 				channel->getMode().userLimit = (action == '+') ? atoi(splitted[3].c_str()) : -1;
 				if (action == '+')
 					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " +l " + splitted[3] + "\r\n");
 				else
 					channel->sendMessageToClient(getMask(cl) + "MODE " + channel->getChannelName() + " -l\r\n");
-				splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
+				if (splitted.size() > 3)
+					splitted.erase(find(splitted.begin(), splitted.end(), splitted[3]));
 				break;
 			default:
 				this->sendErrToClient(cl, ERR_UMODEUNKNOWNFLAG);

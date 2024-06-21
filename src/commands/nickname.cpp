@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nickname.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:15:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/19 14:18:39 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/21 15:15:18 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	Server::_nicknameCase(Client & cl, std::string const & message)
 	else if (isValidName(toSet))
 	{
 		std::string messageToSend = getMask(cl) + message + "\r\n";
-		if (cl.getNickName().empty())
+		if (!cl.getNickName().empty() && !cl.getUserName().empty())
 		{
 			send(cl.getIdentifier(), messageToSend.c_str(), messageToSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 			cl.setNickName(toSet);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 02:56:26 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/18 19:18:57 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 18:19:02 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,4 @@ void	Server::_checkPassword(Client &cl, std::string message)
 		else
 			this->sendErrToClient(cl, ERR_PASSWDMISMATCH);
 	}
-	else
-		this->sendErrToClient(cl, ERROR_PW);
 }

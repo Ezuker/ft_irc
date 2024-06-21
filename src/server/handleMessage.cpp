@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleMessage.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:56:02 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 17:24:20 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:40:04 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,8 @@ int	Server::_handleMessage(unsigned int &i)
 			messages[messageIndex] = this->_clients[i - 1]->getBuffer() + messages[messageIndex];
 			this->_clients[i - 1]->getBuffer() = "";
 			messages[messageIndex] = strtrim(messages[messageIndex]);
+			if (this->_password.empty())
+				this->_clients[i - 1]->setAccess(true);
 			if (this->_clients[i - 1]->getAccess())
 				this->_checkMessage(messages[messageIndex], i);
 			else 

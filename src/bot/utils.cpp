@@ -6,7 +6,7 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 18:01:57 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/19 18:02:40 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:57:36 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ std::string removeSingleQuotes(const std::string& input)
     std::string output;
     for (size_t i = 0; i < input.length(); ++i)
     {
-        if (input[i] != '\'')
+        if (input[i] != '\'' && input[i] != '\"' && input[i] != '{' && input[i] != '}')
         {
             output += input[i];
         }

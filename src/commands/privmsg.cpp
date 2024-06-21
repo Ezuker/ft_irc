@@ -6,14 +6,11 @@
 /*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:34:20 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/17 13:46:07 by bcarolle         ###   ########.fr       */
+/*   Updated: 2024/06/19 18:30:44 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
-
-// CHECK If the client is in the channel before send the message
 
 void	Server::_privmsgCase(Client & client, std::string const & message)
 {

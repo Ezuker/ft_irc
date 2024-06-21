@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/18 14:09:25 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 17:53:04 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:40:39 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	checkArgv(const char *port, const char *pw)
 	std::string s_port = port;
 	for (size_t i = 0; i < s_port.size(); i++)
 		if (!std::isdigit(s_port[i]))
-			throw std::logic_error("Need alpha character in port");
+			throw std::logic_error("Need digit character in port");
 	if (strtold(port, 0x0) > 65535)
 		throw std::logic_error("Port can't be superior to 65535");
 	if (strtold(port, 0x0) < 1025)
@@ -61,6 +61,7 @@ int main(int argc, char **argv)
 	}
 	catch(const std::logic_error& e)
 	{
+		close(server_sock);
 		std::cerr << e.what() << '\n';
 	}
 	return 0;

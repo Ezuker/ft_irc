@@ -99,11 +99,13 @@ $(BUILD_DIR)%.o: %.cpp
 	@echo "$(_BOLD)$(_RED) $< : $(_END) $(_CYAN) $(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@ $(_END)"
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
-bonus: $(OBJBonus)
+bonus: $(NAMEB)
+
+$(NAMEB): $(OBJBonus)
 	@echo
 	@echo "$(_BOLD)$(_CYAN)Compiling ($(_RED)$@$(_CYAN))$(_END)"
 	@echo
-	@echo " $(_BOLD)$(_RED)$(NAME) : $(_END)$(_CYAN) $(CXX) $(OBJBonus) $(_END)"
+	@echo " $(_BOLD)$(_RED)$(NAMEB) : $(_END)$(_CYAN) $(CXX) $(OBJBonus) $(_END)"
 	@$(CXX) $(CXXFLAGS) -o $(NAMEB) $(OBJBonus)
 	@echo
 	@ \

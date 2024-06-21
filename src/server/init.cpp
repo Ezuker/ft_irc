@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 03:55:30 by ehalliez          #+#    #+#             */
-/*   Updated: 2024/06/19 17:41:08 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 18:26:51 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	Server::_initServer()
 {
 	if (this->_fdSocketServ < 0)
 	{
-		std::cerr << "Error: socket() failed" << std::endl;
+		printServer("\033[1;91mError: socket() failed.\033[0m");
 		return (0);
 	}
 	sockaddr_in server_addr;

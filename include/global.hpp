@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   global.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehalliez <ehalliez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bcarolle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:31:35 by bcarolle          #+#    #+#             */
-/*   Updated: 2024/06/19 16:16:09 by ehalliez         ###   ########.fr       */
+/*   Updated: 2024/06/19 18:18:56 by bcarolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 
 //PASS
 # define ERR_PASSWDMISMATCH "464 :Password incorrect\r\n"
-# define ERROR_PW "Error (464): please enter the password 'PASS (PASSWORD)'\r\n"
 
 //TOPIC
 
